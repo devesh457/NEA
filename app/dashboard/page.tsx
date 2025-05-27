@@ -248,13 +248,51 @@ export default function Dashboard() {
               </Link>
               <Link href="/dashboard/change-password" className="w-full bg-gradient-to-r from-orange-500 to-red-500 text-white py-2.5 px-4 rounded-lg font-medium hover:shadow-lg transform hover:scale-105 transition-all duration-200 flex items-center justify-center" style={{width: '100%', background: 'linear-gradient(90deg, #f97316, #ef4444)', color: 'white', padding: '0.625rem 1rem', borderRadius: '0.5rem', fontWeight: '500', textDecoration: 'none', transition: 'all 0.2s ease', display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
                 <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" style={{width: '1rem', height: '1rem', marginRight: '0.5rem'}}>
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z" />
                 </svg>
                 Change Password
               </Link>
             </div>
           </div>
 
+          {/* Useful Links Card */}
+          <div className="bg-white/80 backdrop-blur-md rounded-2xl p-6 border border-white/20 hover:shadow-xl hover:bg-white/90 transition-all duration-300" style={{backgroundColor: 'rgba(255, 255, 255, 0.8)', backdropFilter: 'blur(12px)', borderRadius: '1rem', padding: '1.5rem', border: '1px solid rgba(255, 255, 255, 0.2)', transition: 'all 0.3s ease'}}>
+            <div className="flex items-center mb-4">
+              <div className="w-12 h-12 bg-gradient-to-r from-yellow-500 to-amber-500 rounded-full flex items-center justify-center">
+                <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" />
+                </svg>
+              </div>
+              <h3 className="text-xl font-semibold text-gray-900 ml-3" style={{fontSize: '1.25rem', fontWeight: '600', color: '#111827', marginLeft: '0.75rem'}}>Useful Links</h3>
+            </div>
+            <p className="text-gray-600 mb-4" style={{color: '#4b5563', marginBottom: '1rem'}}>Quick access to important resources</p>
+            <div className="space-y-3" style={{display: 'flex', flexDirection: 'column', gap: '0.75rem'}}>
+              <a href="https://nhai.gov.in" target="_blank" rel="noopener noreferrer" className="w-full bg-gradient-to-r from-yellow-600 to-amber-600 text-white py-2.5 px-4 rounded-lg font-medium hover:shadow-lg transform hover:scale-105 transition-all duration-200 flex items-center justify-center" style={{width: '100%', background: 'linear-gradient(90deg, #d97706, #b45309)', color: 'white', padding: '0.625rem 1rem', borderRadius: '0.5rem', fontWeight: '500', textDecoration: 'none', transition: 'all 0.2s ease', display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
+                <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" style={{width: '1rem', height: '1rem', marginRight: '0.5rem'}}>
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9" />
+                </svg>
+                NHAI Website
+              </a>
+              <a href="https://nhai.gov.in/technical-circulars" target="_blank" rel="noopener noreferrer" className="w-full bg-gradient-to-r from-amber-600 to-orange-600 text-white py-2.5 px-4 rounded-lg font-medium hover:shadow-lg transform hover:scale-105 transition-all duration-200 flex items-center justify-center" style={{width: '100%', background: 'linear-gradient(90deg, #b45309, #ea580c)', color: 'white', padding: '0.625rem 1rem', borderRadius: '0.5rem', fontWeight: '500', textDecoration: 'none', transition: 'all 0.2s ease', display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
+                <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" style={{width: '1rem', height: '1rem', marginRight: '0.5rem'}}>
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                </svg>
+                Technical Circulars
+              </a>
+              <a href="https://nhai.gov.in/tenders" target="_blank" rel="noopener noreferrer" className="w-full bg-gradient-to-r from-orange-600 to-red-600 text-white py-2.5 px-4 rounded-lg font-medium hover:shadow-lg transform hover:scale-105 transition-all duration-200 flex items-center justify-center" style={{width: '100%', background: 'linear-gradient(90deg, #ea580c, #dc2626)', color: 'white', padding: '0.625rem 1rem', borderRadius: '0.5rem', fontWeight: '500', textDecoration: 'none', transition: 'all 0.2s ease', display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
+                <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" style={{width: '1rem', height: '1rem', marginRight: '0.5rem'}}>
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+                </svg>
+                Tenders
+              </a>
+              <a href="https://nhai.gov.in/careers" target="_blank" rel="noopener noreferrer" className="w-full bg-gradient-to-r from-red-600 to-pink-600 text-white py-2.5 px-4 rounded-lg font-medium hover:shadow-lg transform hover:scale-105 transition-all duration-200 flex items-center justify-center" style={{width: '100%', background: 'linear-gradient(90deg, #dc2626, #db2777)', color: 'white', padding: '0.625rem 1rem', borderRadius: '0.5rem', fontWeight: '500', textDecoration: 'none', transition: 'all 0.2s ease', display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
+                <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" style={{width: '1rem', height: '1rem', marginRight: '0.5rem'}}>
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                </svg>
+                Careers
+              </a>
+            </div>
+          </div>
 
         </div>
       </div>
