@@ -1,0 +1,142 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id          String   @id @default(cuid())
+  email       String   @unique
+  name        String?
+  password    String
+  phone       String?
+  designation String?
+  posting     String?
+  role        String   @default("USER") // USER, ADMIN
+  isApproved  Boolean  @default(false)
+  approvedBy  String?
+  approvedAt  DateTime?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  posts       Post[]
+  guestHouseBookings GuestHouseBooking[]
+  questions   Question[]
+  answers     Answer[]
+  questionViews QuestionView[]
+}
+
+model Post {
+  id        String   @id @default(cuid())
+  title     String
+  content   String
+  published Boolean  @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  author    User     @relation(fields: [authorId], references: [id])
+  authorId  String
+}
+
+model GoverningBodyMember {
+  id          String   @id @default(cuid())
+  name        String
+  position    String
+  email       String?
+  phone       String?
+  bio         String?
+  imageUrl    String?
+  order       Int      @default(0)
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Circular {
+  id          String   @id @default(cuid())
+  title       String
+  content     String
+  fileUrl     String?
+  isPublished Boolean  @default(true)
+  publishedAt DateTime @default(now())
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model GuestHouseBooking {
+  id          String   @id @default(cuid())
+  userId      String
+  user        User     @relation(fields: [userId], references: [id])
+  guestHouse  String   // Name of the guest house
+  location    String   // Location/city
+  checkIn     DateTime
+  checkOut    DateTime
+  guests      Int      @default(1)
+  roomType    String   // Single, Double, Suite, etc.
+  purpose     String   // Official, Personal, Conference, etc.
+  specialRequests String?
+  status      String   @default("PENDING") // PENDING, APPROVED, REJECTED, CANCELLED
+  totalAmount Decimal? @db.Decimal(10,2)
+  approvedBy  String?
+  approvedAt  DateTime?
+  rejectedReason String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model GuestHouseAvailability {
+  id          String   @id @default(cuid())
+  guestHouse  String   // Name of the guest house
+  location    String   // Location/city
+  roomType    String   // Single, Double, Suite, etc.
+  totalRooms  Int      @default(1)
+  availableRooms Int   @default(1)
+  pricePerNight Decimal @db.Decimal(10,2)
+  amenities   String?  // JSON string of amenities
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  
+  @@unique([guestHouse, roomType])
+}
+
+model Question {
+  id          String   @id @default(cuid())
+  title       String
+  content     String
+  tags        String?  // JSON array of tags
+  isResolved  Boolean  @default(false)
+  views       Int      @default(0)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  author      User     @relation(fields: [authorId], references: [id])
+  authorId    String
+  answers     Answer[]
+  questionViews QuestionView[]
+}
+
+model Answer {
+  id          String   @id @default(cuid())
+  content     String
+  isAccepted  Boolean  @default(false)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  author      User     @relation(fields: [authorId], references: [id])
+  authorId    String
+  question    Question @relation(fields: [questionId], references: [id], onDelete: Cascade)
+  questionId  String
+}
+
+model QuestionView {
+  id         String   @id @default(cuid())
+  createdAt  DateTime @default(now())
+  user       User     @relation(fields: [userId], references: [id])
+  userId     String
+  question   Question @relation(fields: [questionId], references: [id], onDelete: Cascade)
+  questionId String
+  
+  @@unique([userId, questionId])
+}
+
+ 
