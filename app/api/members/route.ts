@@ -14,6 +14,7 @@ export async function GET() {
         phone: true,
         designation: true,
         posting: true,
+        imageUrl: true,
         createdAt: true
       },
       orderBy: {

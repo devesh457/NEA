@@ -14,7 +14,7 @@ export async function PUT(request: NextRequest) {
       );
     }
 
-    const { phone, designation, posting } = await request.json();
+    const { phone, designation, posting, imageUrl } = await request.json();
 
     // Update user profile
     const updatedUser = await prisma.user.update({
@@ -24,7 +24,8 @@ export async function PUT(request: NextRequest) {
       data: {
         phone: phone?.trim() || null,
         designation: designation?.trim() || null,
-        posting: posting?.trim() || null
+        posting: posting?.trim() || null,
+        imageUrl: imageUrl || null
       },
       select: {
         id: true,
@@ -32,7 +33,8 @@ export async function PUT(request: NextRequest) {
         email: true,
         phone: true,
         designation: true,
-        posting: true
+        posting: true,
+        imageUrl: true
       }
     });
 

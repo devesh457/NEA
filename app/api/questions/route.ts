@@ -49,7 +49,8 @@ export async function GET(request: NextRequest) {
             select: {
               id: true,
               name: true,
-              designation: true
+              designation: true,
+              imageUrl: true
             }
           },
           answers: {
@@ -130,7 +131,8 @@ export async function POST(request: NextRequest) {
           select: {
             id: true,
             name: true,
-            designation: true
+            designation: true,
+            imageUrl: true
           }
         },
         _count: {

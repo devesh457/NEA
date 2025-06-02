@@ -46,6 +46,7 @@ export async function GET(request: NextRequest) {
         phone: true,
         designation: true,
         posting: true,
+        imageUrl: true,
         role: true,
         isApproved: true,
         approvedBy: true,

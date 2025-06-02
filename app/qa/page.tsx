@@ -17,6 +17,7 @@ interface Question {
     id: string;
     name: string;
     designation: string;
+    imageUrl?: string;
   };
   answers: Array<{
     id: string;
@@ -240,8 +241,12 @@ export default function QAPage() {
                     {/* Author and Date */}
                     <div className="flex items-center justify-between mt-4 text-sm text-gray-500">
                       <div className="flex items-center">
-                        <div className="w-8 h-8 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full flex items-center justify-center text-white text-xs font-semibold mr-2">
-                          {question.author.name?.charAt(0).toUpperCase()}
+                        <div className="w-8 h-8 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full flex items-center justify-center text-white text-xs font-semibold mr-2 overflow-hidden">
+                          {question.author.imageUrl ? (
+                            <img src={question.author.imageUrl} alt={question.author.name} className="w-full h-full object-cover" />
+                          ) : (
+                            question.author.name?.charAt(0).toUpperCase()
+                          )}
                         </div>
                         <div>
                           <span className="font-medium text-gray-700">{question.author.name}</span>

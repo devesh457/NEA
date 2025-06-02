@@ -17,7 +17,8 @@ export async function GET(
           select: {
             id: true,
             name: true,
-            designation: true
+            designation: true,
+            imageUrl: true
           }
         },
         answers: {
@@ -26,7 +27,8 @@ export async function GET(
               select: {
                 id: true,
                 name: true,
-                designation: true
+                designation: true,
+                imageUrl: true
               }
             }
           },
@@ -98,7 +100,8 @@ export async function GET(
           select: {
             id: true,
             name: true,
-            designation: true
+            designation: true,
+            imageUrl: true
           }
         },
         answers: {
@@ -107,7 +110,8 @@ export async function GET(
               select: {
                 id: true,
                 name: true,
-                designation: true
+                designation: true,
+                imageUrl: true
               }
             }
           },

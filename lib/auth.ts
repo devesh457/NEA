@@ -60,6 +60,7 @@ export const authOptions: NextAuthOptions = {
         token.phone = user.phone;
         token.designation = user.designation;
         token.posting = user.posting;
+        token.imageUrl = user.imageUrl;
         token.role = user.role;
       }
       return token;
@@ -69,6 +70,7 @@ export const authOptions: NextAuthOptions = {
         session.user.phone = token.phone;
         session.user.designation = token.designation;
         session.user.posting = token.posting;
+        session.user.imageUrl = token.imageUrl;
         session.user.role = token.role;
       }
       return session;

@@ -12,6 +12,7 @@ interface Member {
   phone?: string;
   designation?: string;
   posting?: string;
+  imageUrl?: string;
   createdAt: string;
 }
 
@@ -85,7 +86,16 @@ export default function MemberDirectoryPage() {
               <span className="text-gray-900 font-medium" style={{color: '#111827', fontWeight: '500'}}>Member Directory</span>
             </div>
             <div className="flex items-center space-x-4" style={{display: 'flex', alignItems: 'center', gap: '1rem'}}>
-              <span className="text-gray-600 text-sm" style={{color: '#4b5563', fontSize: '0.875rem'}}>Welcome, {session.user?.name}</span>
+              <div className="flex items-center space-x-2" style={{display: 'flex', alignItems: 'center', gap: '0.5rem'}}>
+                <div className="w-8 h-8 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full flex items-center justify-center text-white text-sm font-semibold overflow-hidden" style={{width: '2rem', height: '2rem', background: 'linear-gradient(90deg, #3b82f6, #8b5cf6)', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'white', fontSize: '0.875rem', fontWeight: '600', overflow: 'hidden'}}>
+                  {session.user?.imageUrl ? (
+                    <img src={session.user.imageUrl} alt={session.user.name || 'Profile'} className="w-full h-full object-cover" style={{width: '100%', height: '100%', objectFit: 'cover'}} />
+                  ) : (
+                    session.user?.name?.charAt(0).toUpperCase()
+                  )}
+                </div>
+                <span className="text-gray-600 text-sm" style={{color: '#4b5563', fontSize: '0.875rem'}}>Welcome, {session.user?.name}</span>
+              </div>
             </div>
           </div>
         </div>
@@ -166,10 +176,14 @@ export default function MemberDirectoryPage() {
               {filteredMembers.map((member) => (
                 <div key={member.id} className="bg-white/80 backdrop-blur-md rounded-xl p-4 border border-white/20 hover:shadow-lg transition-all duration-300" style={{backgroundColor: 'rgba(255, 255, 255, 0.8)', backdropFilter: 'blur(12px)', borderRadius: '0.75rem', padding: '1rem', border: '1px solid rgba(255, 255, 255, 0.2)', transition: 'all 0.3s ease'}}>
                   <div className="flex items-center" style={{display: 'flex', alignItems: 'center'}}>
-                    <div className="w-12 h-12 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full flex items-center justify-center" style={{width: '3rem', height: '3rem', background: 'linear-gradient(90deg, #3b82f6, #8b5cf6)', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
-                      <span className="text-white font-semibold text-lg" style={{color: 'white', fontWeight: '600', fontSize: '1.125rem'}}>
-                        {member.name ? member.name.charAt(0).toUpperCase() : member.email.charAt(0).toUpperCase()}
-                      </span>
+                    <div className="w-12 h-12 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full flex items-center justify-center overflow-hidden" style={{width: '3rem', height: '3rem', background: 'linear-gradient(90deg, #3b82f6, #8b5cf6)', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden'}}>
+                      {member.imageUrl ? (
+                        <img src={member.imageUrl} alt={member.name || 'Profile'} className="w-full h-full object-cover" style={{width: '100%', height: '100%', objectFit: 'cover'}} />
+                      ) : (
+                        <span className="text-white font-semibold text-lg" style={{color: 'white', fontWeight: '600', fontSize: '1.125rem'}}>
+                          {member.name ? member.name.charAt(0).toUpperCase() : member.email.charAt(0).toUpperCase()}
+                        </span>
+                      )}
                     </div>
                     <div className="ml-4 flex-1" style={{marginLeft: '1rem', flex: 1}}>
                       <h3 className="text-lg font-semibold text-gray-900 mb-1" style={{fontSize: '1.125rem', fontWeight: '600', color: '#111827', marginBottom: '0.25rem'}}>

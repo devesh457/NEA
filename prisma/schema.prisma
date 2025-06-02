@@ -15,6 +15,7 @@ model User {
   phone       String?
   designation String?
   posting     String?
+  imageUrl    String?
   role        String   @default("USER") // USER, ADMIN
   isApproved  Boolean  @default(false)
   approvedBy  String?

@@ -5,6 +5,8 @@ declare module "next-auth" {
     phone?: string | null
     designation?: string | null
     posting?: string | null
+    imageUrl?: string | null
+    role?: string | null
   }
 
   interface Session {
@@ -16,6 +18,8 @@ declare module "next-auth" {
       phone?: string | null
       designation?: string | null
       posting?: string | null
+      imageUrl?: string | null
+      role?: string | null
     }
   }
 }
@@ -25,5 +29,7 @@ declare module "next-auth/jwt" {
     phone?: string | null
     designation?: string | null
     posting?: string | null
+    imageUrl?: string | null
+    role?: string | null
   }
 } 

@@ -72,8 +72,12 @@ export default function Navigation() {
                   </Link>
                 )}
                 <div className="flex items-center space-x-3 bg-gradient-to-r from-blue-50 to-purple-50 px-4 py-2 rounded-full border border-blue-100" style={{display: 'flex', alignItems: 'center', gap: '0.75rem', background: 'linear-gradient(90deg, #eff6ff, #faf5ff)', padding: '0.5rem 1rem', borderRadius: '9999px', border: '1px solid #dbeafe'}}>
-                  <div className="w-8 h-8 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full flex items-center justify-center text-white text-sm font-semibold" style={{width: '2rem', height: '2rem', background: 'linear-gradient(90deg, #3b82f6, #8b5cf6)', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'white', fontSize: '0.875rem', fontWeight: '600'}}>
-                    {session.user?.name?.charAt(0).toUpperCase()}
+                  <div className="w-8 h-8 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full flex items-center justify-center text-white text-sm font-semibold overflow-hidden" style={{width: '2rem', height: '2rem', background: 'linear-gradient(90deg, #3b82f6, #8b5cf6)', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'white', fontSize: '0.875rem', fontWeight: '600', overflow: 'hidden'}}>
+                    {session.user?.imageUrl ? (
+                      <img src={session.user.imageUrl} alt={session.user.name || 'Profile'} className="w-full h-full object-cover" style={{width: '100%', height: '100%', objectFit: 'cover'}} />
+                    ) : (
+                      session.user?.name?.charAt(0).toUpperCase()
+                    )}
                   </div>
                   <span className="text-gray-700 text-sm font-medium">Welcome, {session.user?.name}</span>
                 </div>

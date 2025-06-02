@@ -2,19 +2,23 @@
 
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import Link from 'next/link';
 
 export default function UpdateProfilePage() {
   const { data: session, status, update } = useSession();
   const router = useRouter();
   const [loading, setLoading] = useState(false);
+  const [imageUploading, setImageUploading] = useState(false);
   const [message, setMessage] = useState('');
+  const [imagePreview, setImagePreview] = useState<string | null>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
   const [formData, setFormData] = useState({
     name: '',
     phone: '',
     designation: '',
-    posting: ''
+    posting: '',
+    imageUrl: ''
   });
 
   useEffect(() => {
@@ -28,10 +32,76 @@ export default function UpdateProfilePage() {
         name: session.user.name || '',
         phone: session.user.phone || '',
         designation: session.user.designation || '',
-        posting: session.user.posting || ''
+        posting: session.user.posting || '',
+        imageUrl: session.user.imageUrl || ''
       });
+      setImagePreview(session.user.imageUrl || null);
     }
   }, [session]);
+
+  const handleImageUpload = async (file: File) => {
+    if (!file) return;
+
+    // Validate file type
+    const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp'];
+    if (!allowedTypes.includes(file.type)) {
+      setMessage('Invalid file type. Only JPEG, PNG, and WebP are allowed.');
+      return;
+    }
+
+    // Validate file size (5MB limit)
+    const maxSize = 5 * 1024 * 1024; // 5MB
+    if (file.size > maxSize) {
+      setMessage('File size too large. Maximum size is 5MB.');
+      return;
+    }
+
+    setImageUploading(true);
+    setMessage('');
+
+    try {
+      const formData = new FormData();
+      formData.append('file', file);
+
+      const response = await fetch('/api/upload/image', {
+        method: 'POST',
+        body: formData,
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        setFormData(prev => ({ ...prev, imageUrl: data.imageUrl }));
+        setImagePreview(data.imageUrl);
+        setMessage('Image uploaded successfully!');
+      } else {
+        setMessage(data.error || 'Failed to upload image');
+      }
+    } catch (error) {
+      setMessage('An error occurred while uploading image');
+    } finally {
+      setImageUploading(false);
+    }
+  };
+
+  const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      handleImageUpload(file);
+    }
+  };
+
+  const handleDragOver = (e: React.DragEvent) => {
+    e.preventDefault();
+  };
+
+  const handleDrop = (e: React.DragEvent) => {
+    e.preventDefault();
+    const file = e.dataTransfer.files[0];
+    if (file) {
+      handleImageUpload(file);
+    }
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -47,7 +117,8 @@ export default function UpdateProfilePage() {
         body: JSON.stringify({
           phone: formData.phone,
           designation: formData.designation,
-          posting: formData.posting
+          posting: formData.posting,
+          imageUrl: formData.imageUrl
         }),
       });
 
@@ -62,7 +133,8 @@ export default function UpdateProfilePage() {
             ...session?.user,
             phone: formData.phone,
             designation: formData.designation,
-            posting: formData.posting
+            posting: formData.posting,
+            imageUrl: formData.imageUrl
           }
         });
       } else {
@@ -111,8 +183,18 @@ export default function UpdateProfilePage() {
               <span className="text-gray-400" style={{color: '#9ca3af'}}>/</span>
               <span className="text-gray-900 font-medium" style={{color: '#111827', fontWeight: '500'}}>Update Profile</span>
             </div>
+            
             <div className="flex items-center space-x-4" style={{display: 'flex', alignItems: 'center', gap: '1rem'}}>
-              <span className="text-gray-600 text-sm" style={{color: '#4b5563', fontSize: '0.875rem'}}>Welcome, {session.user?.name}</span>
+              <div className="flex items-center space-x-2" style={{display: 'flex', alignItems: 'center', gap: '0.5rem'}}>
+                <div className="w-8 h-8 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full flex items-center justify-center text-white text-sm font-semibold overflow-hidden" style={{width: '2rem', height: '2rem', background: 'linear-gradient(90deg, #3b82f6, #8b5cf6)', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'white', fontSize: '0.875rem', fontWeight: '600', overflow: 'hidden'}}>
+                  {session.user?.imageUrl ? (
+                    <img src={session.user.imageUrl} alt={session.user.name || 'Profile'} className="w-full h-full object-cover" style={{width: '100%', height: '100%', objectFit: 'cover'}} />
+                  ) : (
+                    session.user?.name?.charAt(0).toUpperCase()
+                  )}
+                </div>
+                <span className="text-gray-600 text-sm" style={{color: '#4b5563', fontSize: '0.875rem'}}>Welcome, {session.user?.name}</span>
+              </div>
             </div>
           </div>
         </div>
@@ -139,6 +221,64 @@ export default function UpdateProfilePage() {
         {/* Form */}
         <div className="bg-white/80 backdrop-blur-md rounded-2xl p-8 border border-white/20" style={{backgroundColor: 'rgba(255, 255, 255, 0.8)', backdropFilter: 'blur(12px)', borderRadius: '1rem', padding: '2rem', border: '1px solid rgba(255, 255, 255, 0.2)'}}>
           <form onSubmit={handleSubmit} className="space-y-6" style={{display: 'flex', flexDirection: 'column', gap: '1.5rem'}}>
+            
+            {/* Profile Picture Upload */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2" style={{display: 'block', fontSize: '0.875rem', fontWeight: '500', color: '#374151', marginBottom: '0.5rem'}}>
+                Profile Picture
+              </label>
+              <div className="flex items-center space-x-6" style={{display: 'flex', alignItems: 'center', gap: '1.5rem'}}>
+                {/* Current Profile Picture */}
+                <div className="w-24 h-24 rounded-full overflow-hidden bg-gradient-to-r from-blue-600 to-purple-600 flex items-center justify-center" style={{width: '6rem', height: '6rem', borderRadius: '50%', overflow: 'hidden', background: 'linear-gradient(90deg, #2563eb, #9333ea)', display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
+                  {imagePreview ? (
+                    <img src={imagePreview} alt="Profile" className="w-full h-full object-cover" style={{width: '100%', height: '100%', objectFit: 'cover'}} />
+                  ) : (
+                    <span className="text-2xl font-bold text-white" style={{fontSize: '1.5rem', fontWeight: '700', color: 'white'}}>
+                      {session.user?.name?.split(' ').map(n => n[0]).join('').toUpperCase() || 'U'}
+                    </span>
+                  )}
+                </div>
+
+                {/* Upload Area */}
+                <div className="flex-1">
+                  <div 
+                    className="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center hover:border-blue-400 transition-colors cursor-pointer"
+                    style={{border: '2px dashed #d1d5db', borderRadius: '0.5rem', padding: '1.5rem', textAlign: 'center', transition: 'border-color 0.2s ease', cursor: 'pointer'}}
+                    onDragOver={handleDragOver}
+                    onDrop={handleDrop}
+                    onClick={() => fileInputRef.current?.click()}
+                  >
+                    {imageUploading ? (
+                      <div className="text-blue-600" style={{color: '#2563eb'}}>
+                        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto mb-2" style={{animation: 'spin 1s linear infinite', borderRadius: '50%', height: '2rem', width: '2rem', borderBottom: '2px solid #2563eb', margin: '0 auto 0.5rem'}}></div>
+                        <p>Uploading...</p>
+                      </div>
+                    ) : (
+                      <>
+                        <svg className="mx-auto h-12 w-12 text-gray-400 mb-4" stroke="currentColor" fill="none" viewBox="0 0 48 48" style={{margin: '0 auto', height: '3rem', width: '3rem', color: '#9ca3af', marginBottom: '1rem'}}>
+                          <path d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" />
+                        </svg>
+                        <p className="text-gray-600 mb-2" style={{color: '#4b5563', marginBottom: '0.5rem'}}>
+                          <span className="font-medium text-blue-600" style={{fontWeight: '500', color: '#2563eb'}}>Click to upload</span> or drag and drop
+                        </p>
+                        <p className="text-xs text-gray-500" style={{fontSize: '0.75rem', color: '#6b7280'}}>
+                          PNG, JPG, WebP up to 5MB
+                        </p>
+                      </>
+                    )}
+                  </div>
+                  <input
+                    ref={fileInputRef}
+                    type="file"
+                    accept="image/*"
+                    onChange={handleFileSelect}
+                    className="hidden"
+                    style={{display: 'none'}}
+                  />
+                </div>
+              </div>
+            </div>
+
             {/* Name Field (Read-only) */}
             <div>
               <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-2" style={{display: 'block', fontSize: '0.875rem', fontWeight: '500', color: '#374151', marginBottom: '0.5rem'}}>
@@ -237,7 +377,7 @@ export default function UpdateProfilePage() {
             <div className="flex space-x-4" style={{display: 'flex', gap: '1rem'}}>
               <button
                 type="submit"
-                disabled={loading}
+                disabled={loading || imageUploading}
                 className="flex-1 bg-gradient-to-r from-blue-600 to-purple-600 text-white py-3 px-6 rounded-xl font-medium hover:shadow-lg transform hover:scale-105 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
                 style={{flex: 1, background: 'linear-gradient(90deg, #2563eb, #9333ea)', color: 'white', padding: '0.75rem 1.5rem', borderRadius: '0.75rem', fontWeight: '500', border: 'none', cursor: 'pointer', transition: 'all 0.2s ease'}}
               >

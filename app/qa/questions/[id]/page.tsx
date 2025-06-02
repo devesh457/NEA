@@ -10,6 +10,7 @@ interface Author {
   id: string;
   name: string;
   designation: string;
+  imageUrl?: string;
 }
 
 interface Answer {
@@ -242,8 +243,12 @@ export default function QuestionPage() {
           {/* Author */}
           <div className="flex items-center justify-between pt-6 border-t border-gray-200">
             <div className="flex items-center">
-              <div className="w-10 h-10 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full flex items-center justify-center text-white font-semibold mr-3">
-                {question.author.name?.charAt(0).toUpperCase()}
+              <div className="w-10 h-10 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full flex items-center justify-center text-white font-semibold mr-3 overflow-hidden">
+                {question.author.imageUrl ? (
+                  <img src={question.author.imageUrl} alt={question.author.name} className="w-full h-full object-cover" />
+                ) : (
+                  question.author.name?.charAt(0).toUpperCase()
+                )}
               </div>
               <div>
                 <div className="font-medium text-gray-900">{question.author.name}</div>
@@ -296,10 +301,14 @@ export default function QuestionPage() {
                     </p>
                   </div>
 
-                  <div className="flex items-center justify-between pt-4 border-t border-gray-200">
+                  <div className="flex items-center justify-between mt-4 text-sm text-gray-500">
                     <div className="flex items-center">
-                      <div className="w-8 h-8 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full flex items-center justify-center text-white text-sm font-semibold mr-2">
-                        {answer.author.name?.charAt(0).toUpperCase()}
+                      <div className="w-8 h-8 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full flex items-center justify-center text-white text-sm font-semibold mr-2 overflow-hidden">
+                        {answer.author.imageUrl ? (
+                          <img src={answer.author.imageUrl} alt={answer.author.name} className="w-full h-full object-cover" />
+                        ) : (
+                          answer.author.name?.charAt(0).toUpperCase()
+                        )}
                       </div>
                       <div>
                         <div className="font-medium text-gray-900 text-sm">{answer.author.name}</div>
