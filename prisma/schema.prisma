@@ -22,11 +22,30 @@ model User {
   approvedAt  DateTime?
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
+  
+  // New fields for first-time login form
+  dateOfJoining       DateTime?
+  lastPlaceOfPosting  String?
+  bloodGroup          String?
+  dateOfBirth         DateTime?
+  employeeId          String?   @unique
+  emergencyContactName String?
+  emergencyContactPhone String?
+  emergencyContactRelation String?
+  insuranceNomineeName String?
+  insuranceNomineeRelation String?
+  insuranceNomineePhone String?
+  
+  // Profile completion tracking
+  isProfileComplete   Boolean  @default(false)
+  lastPostingConfirmedAt DateTime?
+  
   posts       Post[]
   guestHouseBookings GuestHouseBooking[]
   questions   Question[]
   answers     Answer[]
   questionViews QuestionView[]
+  events      Event[]
 }
 
 model Post {
@@ -138,6 +157,36 @@ model QuestionView {
   questionId String
   
   @@unique([userId, questionId])
+}
+
+model Event {
+  id          String   @id @default(cuid())
+  title       String
+  description String?
+  eventDate   DateTime
+  location    String?
+  imageUrl    String?
+  isPublished Boolean  @default(true)
+  isFeatured  Boolean  @default(false)
+  createdBy   String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  
+  // Relation to user who created the event
+  creator     User     @relation(fields: [createdBy], references: [id])
+  images      EventImage[]
+}
+
+model EventImage {
+  id        String   @id @default(cuid())
+  eventId   String
+  imageUrl  String
+  caption   String?
+  order     Int      @default(0)
+  createdAt DateTime @default(now())
+  
+  // Relation to event
+  event     Event    @relation(fields: [eventId], references: [id], onDelete: Cascade)
 }
 
  

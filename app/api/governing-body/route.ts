@@ -16,8 +16,10 @@ export async function GET() {
 
     return NextResponse.json(members);
   } catch (error) {
-    console.log("[GOVERNING_BODY_ERROR]", error);
-    return new NextResponse("Internal Error", { status: 500 });
+    return NextResponse.json(
+      { error: 'Internal server error' },
+      { status: 500 }
+    );
   }
 }
 

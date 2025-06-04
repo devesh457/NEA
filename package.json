@@ -10,6 +10,7 @@
     "seed:circulars": "node scripts/seed-circulars.js",
     "seed:governing-body": "node scripts/seed-governing-body.js",
     "seed:admin": "npx tsx prisma/seed-admin.ts",
+    "seed:events": "node scripts/seed-events.js",
     "cleanup:uploads": "node scripts/cleanup-uploads.js"
   },
   "dependencies": {

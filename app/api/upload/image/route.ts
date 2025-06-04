@@ -1,116 +1,67 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getServerSession } from 'next-auth/next';
+import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
-import { writeFile, mkdir, unlink, readdir } from 'fs/promises';
+import { writeFile } from 'fs/promises';
 import { join } from 'path';
-import { prisma } from '@/lib/prisma';
 
 export async function POST(request: NextRequest) {
   try {
     const session = await getServerSession(authOptions);
     
-    if (!session || !session.user?.email) {
-      return NextResponse.json(
-        { error: 'Unauthorized' },
-        { status: 401 }
-      );
+    if (!session?.user?.email) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
     const data = await request.formData();
     const file: File | null = data.get('file') as unknown as File;
 
     if (!file) {
-      return NextResponse.json(
-        { error: 'No file uploaded' },
-        { status: 400 }
-      );
+      return NextResponse.json({ error: 'No file uploaded' }, { status: 400 });
     }
 
     // Validate file type
     const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp'];
     if (!allowedTypes.includes(file.type)) {
-      return NextResponse.json(
-        { error: 'Invalid file type. Only JPEG, PNG, and WebP are allowed.' },
-        { status: 400 }
-      );
+      return NextResponse.json({ error: 'Invalid file type' }, { status: 400 });
     }
 
-    // Validate file size (5MB limit)
-    const maxSize = 5 * 1024 * 1024; // 5MB
+    // Validate file size (5MB max)
+    const maxSize = 5 * 1024 * 1024;
     if (file.size > maxSize) {
-      return NextResponse.json(
-        { error: 'File size too large. Maximum size is 5MB.' },
-        { status: 400 }
-      );
+      return NextResponse.json({ error: 'File too large' }, { status: 400 });
     }
 
     const bytes = await file.arrayBuffer();
     const buffer = Buffer.from(bytes);
 
-    // Create uploads directory if it doesn't exist
-    const uploadsDir = join(process.cwd(), 'public', 'uploads', 'profiles');
-    try {
-      await mkdir(uploadsDir, { recursive: true });
-    } catch (error) {
-      // Directory might already exist
-    }
-
-    // Clean up old profile pictures for this user
-    try {
-      const userEmailPrefix = session.user.email?.replace('@', '_').replace('.', '_');
-      const files = await readdir(uploadsDir);
-      const userFiles = files.filter(file => file.startsWith(`profile_${userEmailPrefix}_`));
-      
-      for (const oldFile of userFiles) {
-        try {
-          await unlink(join(uploadsDir, oldFile));
-          console.log(`Deleted old profile picture: ${oldFile}`);
-        } catch (deleteError) {
-          console.warn(`Could not delete old file ${oldFile}:`, deleteError);
-        }
-      }
-    } catch (cleanupError) {
-      console.warn('Error during cleanup:', cleanupError);
-    }
-
-    // Generate unique filename
+    // Create unique filename
     const timestamp = Date.now();
-    const fileExtension = file.name.split('.').pop();
-    const fileName = `profile_${session.user.email?.replace('@', '_').replace('.', '_')}_${timestamp}.${fileExtension}`;
-    const filePath = join(uploadsDir, fileName);
+    const extension = file.name.split('.').pop();
+    const filename = `profile_${session.user.email.replace('@', '_').replace('.', '_')}_${timestamp}.${extension}`;
+    
+    // Save to public/uploads/profiles directory
+    const uploadDir = join(process.cwd(), 'public', 'uploads', 'profiles');
+    const filePath = join(uploadDir, filename);
+    
+    // Create directory if it doesn't exist
+    const fs = require('fs');
+    if (!fs.existsSync(uploadDir)) {
+      fs.mkdirSync(uploadDir, { recursive: true });
+    }
 
-    // Write file to disk
     await writeFile(filePath, buffer);
 
-    // Return the public URL
-    const imageUrl = `/uploads/profiles/${fileName}`;
+    const imageUrl = `/uploads/profiles/${filename}`;
 
-    // Update the user's imageUrl in the database immediately
-    try {
-      await prisma.user.update({
-        where: {
-          email: session.user.email
-        },
-        data: {
-          imageUrl: imageUrl
-        }
-      });
-      console.log(`Updated database with new image URL: ${imageUrl}`);
-    } catch (dbError) {
-      console.error('Error updating database with image URL:', dbError);
-      // Don't fail the upload if database update fails
-    }
-
-    return NextResponse.json({
-      message: 'Image uploaded successfully',
-      imageUrl
+    return NextResponse.json({ 
+      message: 'File uploaded successfully',
+      imageUrl 
     });
 
   } catch (error) {
-    console.error('Error uploading image:', error);
-    return NextResponse.json(
-      { error: 'Failed to upload image' },
-      { status: 500 }
-    );
+    console.error('Error uploading file:', error);
+    return NextResponse.json({ 
+      error: 'Internal server error' 
+    }, { status: 500 });
   }
 } 

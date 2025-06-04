@@ -62,6 +62,10 @@ export const authOptions: NextAuthOptions = {
         token.posting = user.posting;
         token.imageUrl = user.imageUrl;
         token.role = user.role;
+        token.isProfileComplete = user.isProfileComplete;
+        token.lastPostingConfirmedAt = user.lastPostingConfirmedAt;
+        token.employeeId = user.employeeId;
+        token.bloodGroup = user.bloodGroup;
       }
       return token;
     },
@@ -72,6 +76,10 @@ export const authOptions: NextAuthOptions = {
         session.user.posting = token.posting;
         session.user.imageUrl = token.imageUrl;
         session.user.role = token.role;
+        session.user.isProfileComplete = token.isProfileComplete;
+        session.user.lastPostingConfirmedAt = token.lastPostingConfirmedAt;
+        session.user.employeeId = token.employeeId;
+        session.user.bloodGroup = token.bloodGroup;
       }
       return session;
     },

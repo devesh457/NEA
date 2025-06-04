@@ -19,36 +19,30 @@ export default function LeadershipSection() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    console.log('LeadershipSection component mounted');
+    const fetchLeaders = async () => {
+      try {
+        setLoading(true);
+        const response = await fetch('/api/governing-body');
+        
+        if (response.ok) {
+          const data = await response.json();
+          
+          // Filter for leadership positions (President, Vice President, Secretary, Treasurer)
+          const leadership = data.filter((member: any) => 
+            ['President', 'Vice President', 'Secretary', 'Treasurer'].includes(member.position)
+          );
+          
+          setLeaders(leadership);
+        }
+      } catch (error) {
+        // Silent error handling for production
+      } finally {
+        setLoading(false);
+      }
+    };
+
     fetchLeaders();
   }, []);
-
-  const fetchLeaders = async () => {
-    try {
-      console.log('Fetching leaders...');
-      const response = await fetch('/api/governing-body');
-      console.log('Response status:', response.status);
-      
-      if (response.ok) {
-        const data = await response.json();
-        console.log('All members:', data);
-        
-        // Filter for President and Vice President
-        const leadership = data.filter((member: GoverningBodyMember) => 
-          member.position.toLowerCase().includes('president')
-        ).slice(0, 2); // Get top 2 leadership positions
-        
-        console.log('Filtered leadership:', leadership);
-        setLeaders(leadership);
-      } else {
-        console.error('Response not ok:', response.status);
-      }
-    } catch (error) {
-      console.error('Error fetching leaders:', error);
-    } finally {
-      setLoading(false);
-    }
-  };
 
   if (loading) {
     return (

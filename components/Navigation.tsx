@@ -14,20 +14,16 @@ export default function Navigation() {
         try {
           const response = await fetch('/api/user/me');
           if (response.ok) {
-            const user = await response.json();
-            setIsAdmin(user.role === 'ADMIN');
+            const userData = await response.json();
+            setIsAdmin(userData.role === 'ADMIN');
           }
         } catch (error) {
-          console.error('Error checking admin role:', error);
+          // Silent error handling for production
         }
       }
     };
 
-    if (session) {
-      checkAdminRole();
-    } else {
-      setIsAdmin(false);
-    }
+    checkAdminRole();
   }, [session]);
 
   return (
@@ -42,6 +38,11 @@ export default function Navigation() {
           <div className="flex items-center space-x-6" style={{display: 'flex', alignItems: 'center', gap: '1.5rem'}}>
             <Link href="/governing-body" className="relative text-gray-700 hover:text-blue-600 font-medium transition-all duration-300 group" style={{color: '#374151', textDecoration: 'none', fontWeight: '500', transition: 'all 0.3s ease', position: 'relative'}}>
               Leadership
+              <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-gradient-to-r from-blue-600 to-purple-600 transition-all duration-300 group-hover:w-full" style={{position: 'absolute', bottom: '-4px', left: 0, width: 0, height: '2px', background: 'linear-gradient(90deg, #2563eb, #9333ea)', transition: 'width 0.3s ease'}}></span>
+            </Link>
+            
+            <Link href="/events" className="relative text-gray-700 hover:text-blue-600 font-medium transition-all duration-300 group" style={{color: '#374151', textDecoration: 'none', fontWeight: '500', transition: 'all 0.3s ease', position: 'relative'}}>
+              Events
               <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-gradient-to-r from-blue-600 to-purple-600 transition-all duration-300 group-hover:w-full" style={{position: 'absolute', bottom: '-4px', left: 0, width: 0, height: '2px', background: 'linear-gradient(90deg, #2563eb, #9333ea)', transition: 'width 0.3s ease'}}></span>
             </Link>
             

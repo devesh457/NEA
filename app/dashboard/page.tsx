@@ -4,6 +4,7 @@ import { useSession, signOut } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
+import ProfileWrapper from '@/components/ProfileWrapper';
 
 export default function Dashboard() {
   const { data: session, status } = useSession();
@@ -50,7 +51,7 @@ export default function Dashboard() {
     return null; // Will redirect to login
   }
 
-  return (
+  const DashboardContent = () => (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50" style={{minHeight: '100vh', background: 'linear-gradient(135deg, #f8fafc 0%, #eff6ff 100%)'}}>
       {/* Navigation */}
       <nav className="bg-white/80 backdrop-blur-md border-b border-gray-200/50 sticky top-0 z-50" style={{backgroundColor: 'rgba(255, 255, 255, 0.8)', backdropFilter: 'blur(12px)', borderBottom: '1px solid rgba(229, 231, 235, 0.5)', position: 'sticky', top: 0, zIndex: 50}}>
@@ -120,6 +121,7 @@ export default function Dashboard() {
               <p className="text-gray-900" style={{color: '#111827'}}><span className="text-gray-600" style={{color: '#4b5563'}}>Designation:</span> {session.user?.designation || 'Not provided'}</p>
               <p className="text-gray-900" style={{color: '#111827'}}><span className="text-gray-600" style={{color: '#4b5563'}}>Current Posting:</span> {session.user?.posting || 'Not provided'}</p>
             </div>
+
           </div>
 
           {/* Membership Card */}
@@ -306,5 +308,11 @@ export default function Dashboard() {
         </div>
       </div>
     </div>
+  );
+
+  return (
+    <ProfileWrapper>
+      <DashboardContent />
+    </ProfileWrapper>
   );
 } 

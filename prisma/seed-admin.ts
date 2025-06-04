@@ -6,19 +6,19 @@ const prisma = new PrismaClient();
 async function main() {
   console.log('🌱 Seeding admin user and availability data...');
 
-  // Create admin user
-  const adminPassword = await bcrypt.hash('admin123', 12);
+  const adminPassword = await bcrypt.hash(process.env.ADMIN_PASSWORD || 'admin123', 12);
   
+  // Create admin user
   const admin = await prisma.user.upsert({
     where: { email: 'admin@nea.org' },
     update: {},
     create: {
       email: 'admin@nea.org',
-      name: 'NEA Administrator',
+      name: 'Admin User',
       password: adminPassword,
-      phone: '+91-9876543210',
+      phone: '+91-9999999999',
       designation: 'System Administrator',
-      posting: 'NEA Headquarters',
+      posting: 'Head Office',
       role: 'ADMIN',
       isApproved: true,
       approvedAt: new Date(),
@@ -116,22 +116,24 @@ async function main() {
 
   console.log('✅ Guest house availability data seeded');
 
-  // Update existing test user to be approved
-  await prisma.user.updateMany({
-    where: { email: 'test@nea.org' },
-    data: {
-      isApproved: true,
-      approvedBy: admin.id,
-      approvedAt: new Date(),
-    },
+  // Approve test user if exists
+  const testUser = await prisma.user.findUnique({
+    where: { email: 'test@nea.org' }
   });
+
+  if (testUser) {
+    await prisma.user.update({
+      where: { email: 'test@nea.org' },
+      data: { isApproved: true }
+    });
+  }
 
   console.log('✅ Test user approved');
   console.log('🎉 Seeding completed!');
   console.log('');
   console.log('Admin credentials:');
   console.log('Email: admin@nea.org');
-  console.log('Password: admin123');
+  console.log('Password: Check ADMIN_PASSWORD environment variable');
 }
 
 main()

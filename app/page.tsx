@@ -1,9 +1,80 @@
+'use client';
+
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import LeadershipSection from '@/components/LeadershipSection';
 import Navigation from '@/components/Navigation';
 import BackgroundElements from '@/components/BackgroundElements';
 
+interface Event {
+  id: string;
+  title: string;
+  description?: string;
+  eventDate: string;
+  location?: string;
+  imageUrl?: string;
+  isFeatured: boolean;
+  creator: {
+    id: string;
+    name: string;
+    email: string;
+  };
+  images: EventImage[];
+}
+
+interface EventImage {
+  id: string;
+  imageUrl: string;
+  caption?: string;
+  order: number;
+}
+
 export default function Home() {
+  const [featuredEvents, setFeaturedEvents] = useState<Event[]>([]);
+  const [currentEventIndex, setCurrentEventIndex] = useState(0);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    fetchFeaturedEvents();
+  }, []);
+
+  useEffect(() => {
+    if (featuredEvents.length > 1) {
+      const interval = setInterval(() => {
+        setCurrentEventIndex((prev) => (prev + 1) % featuredEvents.length);
+      }, 5000); // Change event every 5 seconds
+
+      return () => clearInterval(interval);
+    }
+  }, [featuredEvents.length]);
+
+  const fetchFeaturedEvents = async () => {
+    try {
+      const response = await fetch('/api/events');
+      if (response.ok) {
+        const data = await response.json();
+        // Get featured events or the most recent ones if no featured events
+        const featured = data.events.filter((event: Event) => event.isFeatured);
+        const eventsToShow = featured.length > 0 ? featured : data.events.slice(0, 3);
+        setFeaturedEvents(eventsToShow);
+      }
+    } catch (error) {
+      console.error('Error fetching events:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const formatDate = (dateString: string) => {
+    return new Date(dateString).toLocaleDateString('en-US', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric'
+    });
+  };
+
+  const currentEvent = featuredEvents[currentEventIndex];
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50 relative" style={{minHeight: '100vh', background: 'linear-gradient(135deg, #f8fafc 0%, #eff6ff 100%)', position: 'relative'}}>
       {/* Background Elements */}
@@ -86,22 +157,38 @@ export default function Home() {
               </div>
             </div>
 
-            {/* Right Column - Highway Project Pictures Showcase */}
+            {/* Right Column - Dynamic Events Gallery Showcase */}
             <div className="relative animate-slide-up" style={{position: 'relative', animation: 'slideUp 1s ease-out 0.9s both'}}>
               <div className="bg-white/90 backdrop-blur-md rounded-3xl shadow-2xl border border-white/20 p-6 relative overflow-hidden" style={{backgroundColor: 'rgba(255, 255, 255, 0.9)', backdropFilter: 'blur(12px)', borderRadius: '1.5rem', boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.25)', border: '1px solid rgba(255, 255, 255, 0.2)', padding: '1.5rem', position: 'relative', overflow: 'hidden'}}>
                 
                 {/* Header */}
                 <div className="text-center mb-6" style={{textAlign: 'center', marginBottom: '1.5rem'}}>
                   <h3 className="text-2xl font-bold text-gray-900 mb-2" style={{fontSize: '1.5rem', fontWeight: '700', color: '#111827', marginBottom: '0.5rem'}}>
-                    Highway Projects Gallery
+                    Events Gallery
                   </h3>
                   <p className="text-gray-600 text-sm" style={{color: '#4b5563', fontSize: '0.875rem'}}>
-                    Showcasing India's Infrastructure Excellence
+                    {featuredEvents.length > 0 ? 'Community Events, Conferences & Professional Gatherings' : 'Stay tuned for upcoming events'}
                   </p>
                 </div>
 
-                {/* Main Project Image Area */}
-                <div className="relative h-80 bg-gradient-to-br from-blue-500 to-purple-600 rounded-2xl overflow-hidden group cursor-pointer hover:shadow-2xl transition-all duration-500" style={{position: 'relative', height: '20rem', background: 'linear-gradient(135deg, #3b82f6, #9333ea)', borderRadius: '1rem', overflow: 'hidden', cursor: 'pointer', transition: 'all 0.5s ease'}}>
+                {/* Main Events Image Area - Now Dynamic */}
+                <Link
+                  href="/events"
+                  className="block relative h-80 bg-gradient-to-br from-blue-500 to-purple-600 rounded-2xl overflow-hidden group cursor-pointer hover:shadow-2xl transition-all duration-500"
+                  style={{display: 'block', position: 'relative', height: '20rem', background: 'linear-gradient(135deg, #3b82f6, #9333ea)', borderRadius: '1rem', overflow: 'hidden', cursor: 'pointer', transition: 'all 0.5s ease', textDecoration: 'none'}}
+                >
+                  
+                  {/* Dynamic Background Image */}
+                  {currentEvent?.imageUrl && (
+                    <div 
+                      className="absolute inset-0 bg-cover bg-center transition-all duration-1000"
+                      style={{
+                        backgroundImage: `url(${currentEvent.imageUrl})`,
+                        backgroundSize: 'cover',
+                        backgroundPosition: 'center'
+                      }}
+                    />
+                  )}
                   
                   {/* Image Placeholder Overlay */}
                   <div className="absolute inset-0 bg-black/20 group-hover:bg-black/30 transition-all duration-300" style={{position: 'absolute', inset: 0, backgroundColor: 'rgba(0, 0, 0, 0.2)', transition: 'all 0.3s ease'}}></div>
@@ -109,57 +196,80 @@ export default function Home() {
                   {/* Featured Badge */}
                   <div className="absolute top-4 right-4 z-10" style={{position: 'absolute', top: '1rem', right: '1rem', zIndex: 10}}>
                     <span className="px-3 py-1 bg-white/20 backdrop-blur-sm text-white text-sm font-medium rounded-full" style={{padding: '0.25rem 0.75rem', backgroundColor: 'rgba(255, 255, 255, 0.2)', backdropFilter: 'blur(4px)', color: 'white', fontSize: '0.875rem', fontWeight: '500', borderRadius: '9999px'}}>
-                      Featured Project
+                      {currentEvent?.isFeatured ? 'Featured Event' : 'Latest Event'}
                     </span>
                   </div>
 
-                  {/* Image Placeholder Content */}
-                  <div className="absolute inset-0 flex items-center justify-center z-5" style={{position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 5}}>
-                    <div className="text-center text-white" style={{textAlign: 'center', color: 'white'}}>
-                      <svg className="w-20 h-20 mx-auto mb-4 opacity-60 group-hover:opacity-80 transition-opacity" fill="none" stroke="currentColor" viewBox="0 0 24 24" style={{width: '5rem', height: '5rem', margin: '0 auto', marginBottom: '1rem', opacity: 0.6, transition: 'opacity 0.3s ease'}}>
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                      </svg>
-                      <p className="text-xl font-semibold mb-2 group-hover:scale-105 transition-transform" style={{fontSize: '1.25rem', fontWeight: '600', marginBottom: '0.5rem', transition: 'transform 0.3s ease'}}>Highway Project Images</p>
-                      <p className="text-sm opacity-80" style={{fontSize: '0.875rem', opacity: 0.8}}>Click to view project gallery</p>
+                  {/* Event Content or Placeholder */}
+                  {loading ? (
+                    <div className="absolute inset-0 flex items-center justify-center z-5">
+                      <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-white"></div>
                     </div>
-                  </div>
-
-                  {/* Project Info Overlay */}
-                  <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/60 to-transparent p-6 z-10" style={{position: 'absolute', bottom: 0, left: 0, right: 0, background: 'linear-gradient(to top, rgba(0, 0, 0, 0.6), transparent)', padding: '1.5rem', zIndex: 10}}>
-                    <div className="flex items-center justify-between text-white" style={{display: 'flex', alignItems: 'center', justifyContent: 'space-between', color: 'white'}}>
-                      <div>
-                        <h4 className="font-bold text-lg mb-1" style={{fontWeight: '700', fontSize: '1.125rem', marginBottom: '0.25rem'}}>Delhi-Mumbai Expressway</h4>
-                        <p className="text-sm opacity-90" style={{fontSize: '0.875rem', opacity: 0.9}}>1,386 km • 8 Lanes • Under Construction</p>
-                      </div>
-                      <div className="flex items-center space-x-2" style={{display: 'flex', alignItems: 'center', gap: '0.5rem'}}>
-                        <div className="flex space-x-1" style={{display: 'flex', gap: '0.25rem'}}>
-                          <div className="w-2 h-2 bg-orange-400 rounded-full animate-pulse" style={{width: '0.5rem', height: '0.5rem', backgroundColor: '#fb923c', borderRadius: '50%', animation: 'pulse 2s infinite'}}></div>
-                          <div className="w-2 h-2 bg-yellow-400 rounded-full animate-pulse" style={{width: '0.5rem', height: '0.5rem', backgroundColor: '#facc15', borderRadius: '50%', animation: 'pulse 2s infinite 0.5s'}}></div>
-                          <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse" style={{width: '0.5rem', height: '0.5rem', backgroundColor: '#4ade80', borderRadius: '50%', animation: 'pulse 2s infinite 1s'}}></div>
+                  ) : currentEvent ? (
+                    <>
+                      {/* Event Info Overlay */}
+                      <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-6 z-10" style={{position: 'absolute', bottom: 0, left: 0, right: 0, background: 'linear-gradient(to top, rgba(0, 0, 0, 0.8), transparent)', padding: '1.5rem', zIndex: 10}}>
+                        <div className="flex items-center justify-between text-white" style={{display: 'flex', alignItems: 'center', justifyContent: 'space-between', color: 'white'}}>
+                          <div className="flex-1">
+                            <h4 className="font-bold text-lg mb-1 truncate" style={{fontWeight: '700', fontSize: '1.125rem', marginBottom: '0.25rem'}}>{currentEvent.title}</h4>
+                            <p className="text-sm opacity-90 mb-2" style={{fontSize: '0.875rem', opacity: 0.9, marginBottom: '0.5rem'}}>{formatDate(currentEvent.eventDate)}</p>
+                            {currentEvent.location && (
+                              <p className="text-xs opacity-75" style={{fontSize: '0.75rem', opacity: 0.75}}>{currentEvent.location}</p>
+                            )}
+                          </div>
+                          <div className="flex items-center space-x-2" style={{display: 'flex', alignItems: 'center', gap: '0.5rem'}}>
+                            {featuredEvents.length > 1 && (
+                              <div className="flex space-x-1" style={{display: 'flex', gap: '0.25rem'}}>
+                                {featuredEvents.map((_, index) => (
+                                  <div 
+                                    key={index}
+                                    className={`w-2 h-2 rounded-full transition-all duration-300 ${
+                                      index === currentEventIndex ? 'bg-white' : 'bg-white/50'
+                                    }`} 
+                                    style={{width: '0.5rem', height: '0.5rem', borderRadius: '50%', transition: 'all 0.3s ease'}}
+                                  />
+                                ))}
+                              </div>
+                            )}
+                            <svg className="w-5 h-5 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24" style={{width: '1.25rem', height: '1.25rem', transition: 'transform 0.3s ease'}}>
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                            </svg>
+                          </div>
                         </div>
-                        <svg className="w-5 h-5 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24" style={{width: '1.25rem', height: '1.25rem', transition: 'transform 0.3s ease'}}>
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                      </div>
+                    </>
+                  ) : (
+                    <div className="absolute inset-0 flex items-center justify-center z-5" style={{position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 5}}>
+                      <div className="text-center text-white" style={{textAlign: 'center', color: 'white'}}>
+                        <svg className="w-20 h-20 mx-auto mb-4 opacity-60 group-hover:opacity-80 transition-opacity" fill="none" stroke="currentColor" viewBox="0 0 24 24" style={{width: '5rem', height: '5rem', margin: '0 auto', marginBottom: '1rem', opacity: 0.6, transition: 'opacity 0.3s ease'}}>
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
                         </svg>
+                        <p className="text-xl font-semibold mb-2 group-hover:scale-105 transition-transform" style={{fontSize: '1.25rem', fontWeight: '600', marginBottom: '0.5rem', transition: 'transform 0.3s ease'}}>No Events Yet</p>
+                        <p className="text-sm opacity-80" style={{fontSize: '0.875rem', opacity: 0.8}}>Click to explore events</p>
                       </div>
                     </div>
-                  </div>
+                  )}
 
-                  {/* Highway Construction Elements */}
+                  {/* Event Elements */}
                   <div className="absolute top-6 left-6 flex space-x-2 z-5" style={{position: 'absolute', top: '1.5rem', left: '1.5rem', display: 'flex', gap: '0.5rem', zIndex: 5}}>
                     <div className="w-3 h-3 bg-orange-400/60 rounded-full animate-pulse" style={{width: '0.75rem', height: '0.75rem', backgroundColor: 'rgba(251, 146, 60, 0.6)', borderRadius: '50%', animation: 'pulse 3s infinite'}}></div>
                     <div className="w-3 h-3 bg-yellow-400/60 rounded-full animate-pulse" style={{width: '0.75rem', height: '0.75rem', backgroundColor: 'rgba(251, 191, 36, 0.6)', borderRadius: '50%', animation: 'pulse 3s infinite 1s'}}></div>
                     <div className="w-3 h-3 bg-green-400/60 rounded-full animate-pulse" style={{width: '0.75rem', height: '0.75rem', backgroundColor: 'rgba(74, 222, 128, 0.6)', borderRadius: '50%', animation: 'pulse 3s infinite 2s'}}></div>
                   </div>
-                </div>
+                </Link>
 
-                {/* View More Projects Link */}
+                {/* View More Events Link */}
                 <div className="text-center mt-6" style={{textAlign: 'center', marginTop: '1.5rem'}}>
-                  <button className="inline-flex items-center text-blue-600 font-semibold hover:text-purple-600 transition-colors group" style={{display: 'inline-flex', alignItems: 'center', color: '#2563eb', fontWeight: '600', transition: 'color 0.3s ease', cursor: 'pointer', border: 'none', background: 'none'}}>
-                    View More Projects
+                  <Link 
+                    href="/events"
+                    className="inline-flex items-center text-blue-600 font-semibold hover:text-purple-600 transition-colors group"
+                    style={{display: 'inline-flex', alignItems: 'center', color: '#2563eb', fontWeight: '600', transition: 'color 0.3s ease', textDecoration: 'none'}}
+                  >
+                    {featuredEvents.length > 0 ? `View All ${featuredEvents.length} Events` : 'Explore Events'}
                     <svg className="ml-2 w-4 h-4 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24" style={{marginLeft: '0.5rem', width: '1rem', height: '1rem', transition: 'transform 0.3s ease'}}>
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                     </svg>
-                  </button>
+                  </Link>
                 </div>
               </div>
             </div>
@@ -250,7 +360,6 @@ export default function Home() {
           </div>
         </div>
       </div>
-
 
       {/* Leadership Section */}
       <LeadershipSection />

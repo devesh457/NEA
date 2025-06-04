@@ -133,7 +133,12 @@ export default function UpdateProfilePage() {
       const data = await response.json();
 
       if (response.ok) {
-        setMessage('Profile updated successfully!');
+        if (data.postingChanged) {
+          setMessage('Profile updated successfully! Your previous posting has been moved to "Last Place of Posting".');
+        } else {
+          setMessage('Profile updated successfully!');
+        }
+        
         // Update the session with new data
         await update({
           ...session,

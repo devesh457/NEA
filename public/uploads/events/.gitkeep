@@ -1,0 +1,2 @@
+# This file ensures the uploads/events directory is tracked by git
+# Uploaded event images will be stored in this directory 
