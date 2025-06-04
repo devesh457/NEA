@@ -36,7 +36,7 @@ export default function Navigation() {
           {/* Logo */}
           <div className="flex items-center">
             <Link href="/" className="text-xl sm:text-2xl font-bold gradient-text hover:scale-105 transition-transform duration-300">
-              NHAI-EA
+              NHAI-Engineers Association
             </Link>
           </div>
 

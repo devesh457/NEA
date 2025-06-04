@@ -130,7 +130,7 @@ export default function Home() {
             <div className="text-center lg:text-left order-2 lg:order-1">
               <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold text-gray-900 mb-4 lg:mb-6 animate-fade-in leading-tight">
                 <span className="bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent drop-shadow-lg">
-                  NHAI-EA
+                  NHAI-Engineers Association
                 </span>
               </h1>
               <p className="mt-4 lg:mt-6 text-base sm:text-lg lg:text-xl text-gray-600 leading-relaxed animate-slide-up mb-6 lg:mb-8 max-w-2xl mx-auto lg:mx-0">
