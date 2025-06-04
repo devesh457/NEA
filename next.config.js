@@ -3,6 +3,12 @@ const nextConfig = {
   // Enable static file serving
   trailingSlash: false,
   
+  // Optimize images
+  images: {
+    domains: ['library.nhai.org'],
+    unoptimized: false,
+  },
+  
   // Configure headers for uploaded files
   async headers() {
     return [
@@ -16,6 +22,15 @@ const nextConfig = {
           {
             key: 'X-Content-Type-Options',
             value: 'nosniff',
+          },
+        ],
+      },
+      {
+        source: '/_next/static/:path*',
+        headers: [
+          {
+            key: 'Cache-Control',
+            value: 'public, max-age=31536000, immutable',
           },
         ],
       },
