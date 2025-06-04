@@ -8,7 +8,6 @@ import Link from 'next/link';
 interface Circular {
   id: string;
   title: string;
-  content: string;
   fileUrl?: string;
   publishedAt: string;
 }
@@ -80,8 +79,7 @@ export default function CircularsPage() {
   };
 
   const filteredCirculars = circulars.filter(circular =>
-    circular.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    circular.content.toLowerCase().includes(searchTerm.toLowerCase())
+    circular.title.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   if (status === 'loading') {
@@ -149,7 +147,7 @@ export default function CircularsPage() {
               </div>
               <input
                 type="text"
-                placeholder="Search circulars by title or content..."
+                placeholder="Search circulars by title..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
                 className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
@@ -172,71 +170,67 @@ export default function CircularsPage() {
               </svg>
             </div>
             <h3 className="text-xl font-semibold text-gray-900 mb-2" style={{fontSize: '1.25rem', fontWeight: '600', color: '#111827', marginBottom: '0.5rem'}}>
-              {searchTerm ? 'No Circulars Found' : 'No Circulars Available'}
+              No Circulars Found
             </h3>
             <p className="text-gray-600" style={{color: '#4b5563'}}>
-              {searchTerm ? 'Try adjusting your search terms.' : 'There are currently no circulars published. Check back later for updates.'}
+              Try adjusting your search terms.
             </p>
           </div>
-                  ) : (
+        ) : (
           <>
             {/* Stats */}
             <div className="mb-6" style={{marginBottom: '1.5rem'}}>
               <div className="bg-white/80 backdrop-blur-md rounded-2xl p-4 border border-white/20" style={{backgroundColor: 'rgba(255, 255, 255, 0.8)', backdropFilter: 'blur(12px)', borderRadius: '1rem', padding: '1rem', border: '1px solid rgba(255, 255, 255, 0.2)'}}>
                 <p className="text-gray-600" style={{color: '#4b5563'}}>
                   Showing {filteredCirculars.length} of {circulars.length} circulars
-                  {searchTerm && ` matching "${searchTerm}"`}
                 </p>
               </div>
             </div>
 
             <div className="space-y-6" style={{display: 'flex', flexDirection: 'column', gap: '1.5rem'}}>
               {filteredCirculars.map((circular) => (
-              <div key={circular.id} className="bg-white/80 backdrop-blur-md rounded-2xl p-6 border border-white/20 hover:shadow-xl transition-all duration-300" style={{backgroundColor: 'rgba(255, 255, 255, 0.8)', backdropFilter: 'blur(12px)', borderRadius: '1rem', padding: '1.5rem', border: '1px solid rgba(255, 255, 255, 0.2)', transition: 'all 0.3s ease'}}>
-                <div className="flex items-start justify-between mb-4" style={{display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', marginBottom: '1rem'}}>
-                  <div className="flex-1">
-                    <h3 className="text-xl font-semibold text-gray-900 mb-2" style={{fontSize: '1.25rem', fontWeight: '600', color: '#111827', marginBottom: '0.5rem'}}>
-                      {circular.title}
-                    </h3>
-                    <p className="text-gray-600 text-sm" style={{color: '#4b5563', fontSize: '0.875rem'}}>
-                      Published on {new Date(circular.publishedAt).toLocaleDateString('en-US', {
-                        year: 'numeric',
-                        month: 'long',
-                        day: 'numeric'
-                      })}
-                    </p>
-                  </div>
-                  {circular.fileUrl && (
-                    <div className="flex space-x-2" style={{display: 'flex', gap: '0.5rem'}}>
-                      <button
-                        onClick={() => openPDFPopup(circular.fileUrl!, circular.title)}
-                        className="bg-gradient-to-r from-green-600 to-teal-600 text-white px-4 py-2 rounded-lg font-medium hover:shadow-lg transform hover:scale-105 transition-all duration-200 flex items-center"
-                        style={{background: 'linear-gradient(90deg, #059669, #0d9488)', color: 'white', padding: '0.5rem 1rem', borderRadius: '0.5rem', fontWeight: '500', border: 'none', cursor: 'pointer', transition: 'all 0.2s ease', display: 'flex', alignItems: 'center'}}
-                      >
-                        <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" style={{width: '1rem', height: '1rem', marginRight: '0.5rem'}}>
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
-                        </svg>
-                        View PDF
-                      </button>
-                      <button
-                        onClick={() => downloadPDF(circular.fileUrl!, circular.title)}
-                        className="bg-gradient-to-r from-blue-600 to-purple-600 text-white px-4 py-2 rounded-lg font-medium hover:shadow-lg transform hover:scale-105 transition-all duration-200 flex items-center"
-                        style={{background: 'linear-gradient(90deg, #2563eb, #9333ea)', color: 'white', padding: '0.5rem 1rem', borderRadius: '0.5rem', fontWeight: '500', border: 'none', cursor: 'pointer', transition: 'all 0.2s ease', display: 'flex', alignItems: 'center'}}
-                      >
-                        <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" style={{width: '1rem', height: '1rem', marginRight: '0.5rem'}}>
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                        </svg>
-                        Download
-                      </button>
+                <div key={circular.id} className="bg-white/80 backdrop-blur-md rounded-2xl p-6 border border-white/20 hover:shadow-xl transition-all duration-300" style={{backgroundColor: 'rgba(255, 255, 255, 0.8)', backdropFilter: 'blur(12px)', borderRadius: '1rem', padding: '1.5rem', border: '1px solid rgba(255, 255, 255, 0.2)', transition: 'all 0.3s ease'}}>
+                  <div className="flex items-start justify-between mb-4" style={{display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', marginBottom: '1rem'}}>
+                    <div className="flex-1">
+                      <h3 className="text-xl font-semibold text-gray-900 mb-2" style={{fontSize: '1.25rem', fontWeight: '600', color: '#111827', marginBottom: '0.5rem'}}>
+                        {circular.title}
+                      </h3>
+                      <p className="text-gray-600 text-sm" style={{color: '#4b5563', fontSize: '0.875rem'}}>
+                        Published on {new Date(circular.publishedAt).toLocaleDateString('en-US', {
+                          year: 'numeric',
+                          month: 'long',
+                          day: 'numeric'
+                        })}
+                      </p>
                     </div>
-                  )}
+                    {circular.fileUrl && (
+                      <div className="flex space-x-2" style={{display: 'flex', gap: '0.5rem'}}>
+                        <button
+                          onClick={() => openPDFPopup(circular.fileUrl!, circular.title)}
+                          className="bg-gradient-to-r from-green-600 to-teal-600 text-white px-4 py-2 rounded-lg font-medium hover:shadow-lg transform hover:scale-105 transition-all duration-200 flex items-center"
+                          style={{background: 'linear-gradient(90deg, #059669, #0d9488)', color: 'white', padding: '0.5rem 1rem', borderRadius: '0.5rem', fontWeight: '500', border: 'none', cursor: 'pointer', transition: 'all 0.2s ease', display: 'flex', alignItems: 'center'}}
+                        >
+                          <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" style={{width: '1rem', height: '1rem', marginRight: '0.5rem'}}>
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                          </svg>
+                          View PDF
+                        </button>
+                        <button
+                          onClick={() => downloadPDF(circular.fileUrl!, circular.title)}
+                          className="bg-gradient-to-r from-blue-600 to-purple-600 text-white px-4 py-2 rounded-lg font-medium hover:shadow-lg transform hover:scale-105 transition-all duration-200 flex items-center"
+                          style={{background: 'linear-gradient(90deg, #2563eb, #9333ea)', color: 'white', padding: '0.5rem 1rem', borderRadius: '0.5rem', fontWeight: '500', border: 'none', cursor: 'pointer', transition: 'all 0.2s ease', display: 'flex', alignItems: 'center'}}
+                        >
+                          <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" style={{width: '1rem', height: '1rem', marginRight: '0.5rem'}}>
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                          </svg>
+                          Download
+                        </button>
+                      </div>
+                    )}
+                  </div>
                 </div>
-                <div className="prose prose-gray max-w-none" style={{color: '#374151', lineHeight: '1.75'}}>
-                  <p>{circular.content}</p>
-                </div>
-              </div>
-            ))}
+              ))}
             </div>
           </>
         )}

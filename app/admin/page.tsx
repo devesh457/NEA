@@ -819,7 +819,7 @@ export default function AdminDashboard() {
                     {users.filter(user => !user.isApproved).length === 0 ? (
                       <p className="text-gray-500">No pending user approvals</p>
                     ) : (
-                      <div className="space-y-4">
+              <div className="space-y-4">
                         {users.filter(user => !user.isApproved).slice(0, 5).map((user) => (
                           <div key={user.id} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
                             <div>
@@ -831,7 +831,7 @@ export default function AdminDashboard() {
                                 onClick={() => handleUserAction(user.id, 'approve')}
                                 disabled={actionLoading === user.id}
                                 className="bg-green-600 text-white px-3 py-1 rounded text-sm hover:bg-green-700 disabled:opacity-50"
-                              >
+                  >
                                 {actionLoading === user.id ? 'Processing...' : 'Approve'}
                               </button>
                               <button
@@ -841,7 +841,7 @@ export default function AdminDashboard() {
                               >
                                 Reject
                               </button>
-                            </div>
+                </div>
                           </div>
                         ))}
                       </div>
@@ -852,8 +852,8 @@ export default function AdminDashboard() {
                     <h3 className="text-lg font-semibold text-gray-800 mb-4">Recent Bookings</h3>
                     {bookings.length === 0 ? (
                       <p className="text-gray-500">No recent bookings</p>
-                    ) : (
-                      <div className="space-y-4">
+                ) : (
+                  <div className="space-y-4">
                         {bookings.slice(0, 5).map((booking) => (
                           <div key={booking.id} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
                             <div>
@@ -861,19 +861,19 @@ export default function AdminDashboard() {
                               <p className="text-sm text-gray-600">{booking.user.name}</p>
                             </div>
                             <span className={`px-2 py-1 text-xs rounded-full ${
-                              booking.status === 'APPROVED' ? 'bg-green-100 text-green-800' : 
+                                booking.status === 'APPROVED' ? 'bg-green-100 text-green-800' :
                               booking.status === 'PENDING' ? 'bg-yellow-100 text-yellow-800' : 
                               'bg-red-100 text-red-800'
-                            }`}>
-                              {booking.status}
-                            </span>
-                          </div>
+                              }`}>
+                                {booking.status}
+                              </span>
+                            </div>
                         ))}
-                      </div>
+                              </div>
                     )}
-                  </div>
-                </div>
-              </div>
+                              </div>
+                              </div>
+                              </div>
             )}
 
             {/* Change Password Tab */}
@@ -882,8 +882,8 @@ export default function AdminDashboard() {
                 <h2 className="text-2xl font-bold text-gray-900">Change Password</h2>
                 <div className="max-w-md">
                   <ChangePasswordForm />
-                </div>
-              </div>
+                              </div>
+                              </div>
             )}
 
             {/* Members Tab */}
@@ -904,8 +904,8 @@ export default function AdminDashboard() {
                         onChange={(e) => setSearchTerm(e.target.value)}
                         className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                       />
-                    </div>
-                    <div>
+                              </div>
+                              <div>
                       <select
                         value={filterStatus}
                         onChange={(e) => setFilterStatus(e.target.value)}
@@ -915,9 +915,9 @@ export default function AdminDashboard() {
                         <option value="approved">Approved</option>
                         <option value="pending">Pending Approval</option>
                       </select>
-                    </div>
-                  </div>
-                </div>
+                              </div>
+                            </div>
+                              </div>
 
                 {/* Members Grid */}
                 <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
@@ -936,7 +936,7 @@ export default function AdminDashboard() {
                               {member.name?.charAt(0).toUpperCase() || 'U'}
                             </span>
                           )}
-                        </div>
+                              </div>
                         <div className="flex-1">
                           <h3 className="text-lg font-semibold text-gray-900">{member.name || 'No Name'}</h3>
                           <p className="text-sm text-gray-600">{member.email}</p>
@@ -953,8 +953,8 @@ export default function AdminDashboard() {
                                 Complete Profile
                               </span>
                             )}
+                              </div>
                           </div>
-                        </div>
                       </div>
 
                       <div className="space-y-2 text-sm text-gray-600">
@@ -966,19 +966,19 @@ export default function AdminDashboard() {
 
                       {!member.isApproved && (
                         <div className="mt-4 flex space-x-2">
-                          <button
+                              <button
                             onClick={(e) => {
                               e.stopPropagation();
                               handleApproveUser(member.id);
                             }}
                             className="flex-1 bg-green-600 text-white px-3 py-2 rounded text-sm hover:bg-green-700"
-                          >
+                              >
                             Approve
-                          </button>
-                        </div>
-                      )}
-                    </div>
-                  ))}
+                              </button>
+                            </div>
+                          )}
+                      </div>
+                    ))}
                 </div>
 
                 {filteredMembers.length === 0 && (
@@ -1019,7 +1019,7 @@ export default function AdminDashboard() {
                         ) : (
                           <div className="flex items-center justify-center h-full">
                             <CalendarDays className="w-16 h-16 text-white opacity-50" />
-                          </div>
+                              </div>
                         )}
                         <div className="absolute top-4 right-4 flex space-x-2">
                           {event.isFeatured && (
@@ -1032,8 +1032,8 @@ export default function AdminDashboard() {
                           }`}>
                             {event.isPublished ? 'Published' : 'Draft'}
                           </span>
-                        </div>
-                      </div>
+                              </div>
+                              </div>
                       
                       <div className="p-6">
                         <h3 className="text-lg font-semibold text-gray-900 mb-2">{event.title}</h3>
@@ -1043,36 +1043,36 @@ export default function AdminDashboard() {
                           <div className="flex items-center">
                             <Calendar className="w-4 h-4 mr-2" />
                             {new Date(event.eventDate).toLocaleDateString()}
-                          </div>
+                              </div>
                           {event.location && (
                             <div className="flex items-center">
                               <MapPin className="w-4 h-4 mr-2" />
                               {event.location}
                             </div>
                           )}
-                        </div>
+                          </div>
 
                         <div className="flex space-x-2">
-                          <button
+                            <button
                             onClick={() => handleEditEvent(event)}
                             className="flex-1 bg-blue-600 text-white px-3 py-2 rounded text-sm hover:bg-blue-700 flex items-center justify-center"
-                          >
+                            >
                             <Edit className="w-4 h-4 mr-1" />
                             Edit
-                          </button>
-                          <button
+                            </button>
+                            <button
                             onClick={() => {
                               setSelectedEvent(event);
                               setShowDeleteEventModal(true);
                             }}
                             className="bg-red-600 text-white px-3 py-2 rounded text-sm hover:bg-red-700"
-                          >
+                            >
                             <Trash2 className="w-4 h-4" />
-                          </button>
+                            </button>
+                          </div>
                         </div>
                       </div>
-                    </div>
-                  ))}
+                    ))}
                 </div>
 
                 {events.length === 0 && (
@@ -1182,14 +1182,14 @@ export default function AdminDashboard() {
                 </div>
 
                 {/* Bookings List */}
-                <div className="space-y-4">
+              <div className="space-y-4">
                   {getFilteredBookings().map((booking) => (
                     <div key={booking.id} className="bg-white rounded-xl p-6 shadow-lg">
                       <div className="flex justify-between items-start mb-4">
                         <div>
                           <h3 className="text-lg font-semibold text-gray-900">{booking.guestHouse}</h3>
                           <p className="text-gray-600">{booking.location}</p>
-                        </div>
+                </div>
                         <span className={`px-3 py-1 text-sm rounded-full ${
                           booking.status === 'APPROVED' ? 'bg-green-100 text-green-800' : 
                           booking.status === 'PENDING' ? 'bg-yellow-100 text-yellow-800' : 
@@ -1197,7 +1197,7 @@ export default function AdminDashboard() {
                         }`}>
                           {booking.status}
                         </span>
-                      </div>
+              </div>
 
                       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-4">
                         <div>
@@ -1218,9 +1218,9 @@ export default function AdminDashboard() {
                           <p className="text-sm text-gray-600">{booking.purpose}</p>
                           {booking.totalAmount && (
                             <p className="text-sm text-gray-600">Amount: {formatCurrency(booking.totalAmount)}</p>
-                          )}
-                        </div>
-                      </div>
+            )}
+          </div>
+        </div>
 
                       {booking.specialRequests && (
                         <div className="mb-4">

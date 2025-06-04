@@ -11,7 +11,8 @@
     "seed:governing-body": "node scripts/seed-governing-body.js",
     "seed:admin": "npx tsx prisma/seed-admin.ts",
     "seed:events": "node scripts/seed-events.js",
-    "cleanup:uploads": "node scripts/cleanup-uploads.js"
+    "cleanup:uploads": "node scripts/cleanup-uploads.js",
+    "import:circulars": "node scripts/import-circulars-csv.js"
   },
   "dependencies": {
     "@auth/prisma-adapter": "^2.9.1",
