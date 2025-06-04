@@ -32,7 +32,7 @@ export default function Navigation() {
         <div className="flex justify-between h-16" style={{display: 'flex', justifyContent: 'space-between', height: '4rem', alignItems: 'center'}}>
           <div className="flex items-center" style={{display: 'flex', alignItems: 'center'}}>
             <Link href="/" className="text-2xl font-bold gradient-text hover:scale-105 transition-transform duration-300" style={{fontSize: '1.75rem', fontWeight: '800', textDecoration: 'none', transition: 'transform 0.3s ease'}}>
-              NHAI-EA
+              NHAI-Engineers Association
             </Link>
           </div>
           <div className="flex items-center space-x-6" style={{display: 'flex', alignItems: 'center', gap: '1.5rem'}}>
