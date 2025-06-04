@@ -130,7 +130,7 @@ export default function Home() {
             <div className="text-center lg:text-left" style={{textAlign: 'center'}}>
               <h1 className="text-5xl md:text-7xl lg:text-8xl font-bold text-gray-900 mb-6 animate-fade-in" style={{fontSize: 'clamp(3rem, 8vw, 5rem)', fontWeight: '900', color: '#111827', marginBottom: '1.5rem', lineHeight: '1.1', animation: 'fadeIn 1s ease-out'}}>
                 <span className="bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent drop-shadow-lg" style={{background: 'linear-gradient(90deg, #2563eb, #9333ea)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', filter: 'drop-shadow(0 4px 6px rgba(0, 0, 0, 0.1))'}}>
-                  NHAI-EA
+                  NHAI-Engineers Association
                 </span>
               </h1>
               <p className="mt-6 text-lg lg:text-xl text-gray-600 leading-relaxed animate-slide-up mb-8" style={{marginTop: '1.5rem', fontSize: 'clamp(1.125rem, 2vw, 1.25rem)', color: '#4b5563', lineHeight: '1.75', animation: 'slideUp 1s ease-out 0.3s both', marginBottom: '2rem'}}>
