@@ -85,6 +85,22 @@ export async function POST(request: NextRequest) {
     // Return the public URL
     const imageUrl = `/uploads/profiles/${fileName}`;
 
+    // Update the user's imageUrl in the database immediately
+    try {
+      await prisma.user.update({
+        where: {
+          email: session.user.email
+        },
+        data: {
+          imageUrl: imageUrl
+        }
+      });
+      console.log(`Updated database with new image URL: ${imageUrl}`);
+    } catch (dbError) {
+      console.error('Error updating database with image URL:', dbError);
+      // Don't fail the upload if database update fails
+    }
+
     return NextResponse.json({
       message: 'Image uploaded successfully',
       imageUrl

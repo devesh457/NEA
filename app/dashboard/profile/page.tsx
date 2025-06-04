@@ -4,6 +4,7 @@ import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState, useRef } from 'react';
 import Link from 'next/link';
+import { getImageUrl } from '@/lib/utils';
 
 export default function UpdateProfilePage() {
   const { data: session, status, update } = useSession();
@@ -35,7 +36,8 @@ export default function UpdateProfilePage() {
         posting: session.user.posting || '',
         imageUrl: session.user.imageUrl || ''
       });
-      setImagePreview(session.user.imageUrl || null);
+      const properImageUrl = getImageUrl(session.user.imageUrl);
+      setImagePreview(properImageUrl);
     }
   }, [session]);
 
@@ -72,8 +74,14 @@ export default function UpdateProfilePage() {
 
       if (response.ok) {
         setFormData(prev => ({ ...prev, imageUrl: data.imageUrl }));
-        setImagePreview(data.imageUrl);
+        const properImageUrl = getImageUrl(data.imageUrl);
+        const cacheBustedUrl = properImageUrl ? `${properImageUrl}?t=${Date.now()}` : null;
+        setImagePreview(cacheBustedUrl);
         setMessage('Image uploaded successfully!');
+        
+        setTimeout(() => {
+          window.location.reload();
+        }, 1000);
       } else {
         setMessage(data.error || 'Failed to upload image');
       }
