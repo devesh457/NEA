@@ -62,26 +62,49 @@ export default function UpdateProfilePage() {
     setMessage('');
 
     try {
-      const formData = new FormData();
-      formData.append('file', file);
+      const uploadFormData = new FormData();
+      uploadFormData.append('file', file);
 
       const response = await fetch('/api/upload/image', {
         method: 'POST',
-        body: formData,
+        body: uploadFormData,
       });
 
       const data = await response.json();
 
       if (response.ok) {
+        // Update local state with new image URL
         setFormData(prev => ({ ...prev, imageUrl: data.imageUrl }));
         const properImageUrl = getImageUrl(data.imageUrl);
         const cacheBustedUrl = properImageUrl ? `${properImageUrl}?t=${Date.now()}` : null;
         setImagePreview(cacheBustedUrl);
-        setMessage('Image uploaded successfully!');
         
-        setTimeout(() => {
-          window.location.reload();
-        }, 1000);
+        // Immediately update the database with the new image URL
+        try {
+          const currentFormData = formData; // Get current form state
+          const updateResponse = await fetch('/api/profile/update', {
+            method: 'PUT',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              phone: currentFormData.phone,
+              designation: currentFormData.designation,
+              posting: currentFormData.posting,
+              imageUrl: data.imageUrl
+            }),
+          });
+
+          if (updateResponse.ok) {
+            setMessage('Image uploaded and profile updated successfully!');
+            // Force session refresh to show updated image immediately
+            await update();
+          } else {
+            setMessage('Image uploaded but failed to update profile. Please save your profile to apply changes.');
+          }
+        } catch (updateError) {
+          setMessage('Image uploaded but failed to update profile. Please save your profile to apply changes.');
+        }
       } else {
         setMessage(data.error || 'Failed to upload image');
       }
@@ -139,17 +162,8 @@ export default function UpdateProfilePage() {
           setMessage('Profile updated successfully!');
         }
         
-        // Update the session with new data
-        await update({
-          ...session,
-          user: {
-            ...session?.user,
-            phone: formData.phone,
-            designation: formData.designation,
-            posting: formData.posting,
-            imageUrl: formData.imageUrl
-          }
-        });
+        // Session will be automatically updated by JWT callback
+        await update();
       } else {
         setMessage(data.error || 'Failed to update profile');
       }
