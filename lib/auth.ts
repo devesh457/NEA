@@ -56,7 +56,52 @@ export const authOptions: NextAuthOptions = {
   },
   callbacks: {
     async jwt({ token, user }) {
+      // Always fetch fresh user data from database
+      if (token.email) {
+        try {
+          const freshUser = await prisma.user.findUnique({
+            where: { email: token.email },
+            select: {
+              id: true,
+              email: true,
+              name: true,
+              phone: true,
+              designation: true,
+              posting: true,
+              imageUrl: true,
+              role: true,
+              isProfileComplete: true,
+              lastPostingConfirmedAt: true,
+              employeeId: true,
+              bloodGroup: true,
+              isApproved: true
+            }
+          });
+
+          if (freshUser) {
+            token.id = freshUser.id;
+            token.name = freshUser.name;
+            token.phone = freshUser.phone;
+            token.designation = freshUser.designation;
+            token.posting = freshUser.posting;
+            token.imageUrl = freshUser.imageUrl;
+            token.role = freshUser.role;
+            token.isProfileComplete = freshUser.isProfileComplete;
+            token.lastPostingConfirmedAt = freshUser.lastPostingConfirmedAt;
+            token.employeeId = freshUser.employeeId;
+            token.bloodGroup = freshUser.bloodGroup;
+            token.isApproved = freshUser.isApproved;
+          }
+        } catch (error) {
+          console.error('Error fetching fresh user data:', error);
+        }
+      }
+      
+      // Handle initial login case
       if (user) {
+        token.id = user.id;
+        token.email = user.email;
+        token.name = user.name;
         token.phone = user.phone;
         token.designation = user.designation;
         token.posting = user.posting;
@@ -67,10 +112,12 @@ export const authOptions: NextAuthOptions = {
         token.employeeId = user.employeeId;
         token.bloodGroup = user.bloodGroup;
       }
+      
       return token;
     },
     async session({ session, token }) {
       if (token && session.user) {
+        session.user.id = token.id as string;
         session.user.phone = token.phone;
         session.user.designation = token.designation;
         session.user.posting = token.posting;
