@@ -34,9 +34,25 @@ export default function MemberDirectoryPage() {
     }
   }, [session]);
 
+  // Auto-refresh every 30 seconds to catch profile updates
+  useEffect(() => {
+    if (session) {
+      const interval = setInterval(() => {
+        fetchMembers();
+      }, 30000); // 30 seconds
+
+      return () => clearInterval(interval);
+    }
+  }, [session]);
+
   const fetchMembers = async () => {
     try {
-      const response = await fetch('/api/members');
+      const response = await fetch('/api/members', {
+        cache: 'no-store', // Ensure fresh data
+        headers: {
+          'Cache-Control': 'no-cache'
+        }
+      });
       if (response.ok) {
         const data = await response.json();
         setMembers(data);
@@ -46,6 +62,11 @@ export default function MemberDirectoryPage() {
     } finally {
       setLoading(false);
     }
+  };
+
+  const handleRefresh = () => {
+    setLoading(true);
+    fetchMembers();
   };
 
   const filteredMembers = members.filter(member =>
@@ -111,9 +132,22 @@ export default function MemberDirectoryPage() {
       <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8" style={{position: 'relative', maxWidth: '80rem', margin: '0 auto', padding: '2rem 1rem'}}>
         {/* Header */}
         <div className="mb-8" style={{marginBottom: '2rem'}}>
-          <h1 className="text-4xl font-bold text-gray-900 mb-2" style={{fontSize: '2.25rem', fontWeight: '700', color: '#111827', marginBottom: '0.5rem'}}>
-            Member Directory
-          </h1>
+          <div className="flex justify-between items-center mb-2" style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.5rem'}}>
+            <h1 className="text-4xl font-bold text-gray-900" style={{fontSize: '2.25rem', fontWeight: '700', color: '#111827'}}>
+              Member Directory
+            </h1>
+            <button
+              onClick={handleRefresh}
+              disabled={loading}
+              className="bg-gradient-to-r from-blue-600 to-purple-600 text-white px-4 py-2 rounded-lg font-medium hover:shadow-lg transform hover:scale-105 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed flex items-center space-x-2"
+              style={{background: 'linear-gradient(90deg, #2563eb, #9333ea)', color: 'white', padding: '0.5rem 1rem', borderRadius: '0.5rem', fontWeight: '500', border: 'none', cursor: 'pointer', transition: 'all 0.2s ease', display: 'flex', alignItems: 'center', gap: '0.5rem'}}
+            >
+              <svg className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24" style={{width: '1rem', height: '1rem'}}>
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+              </svg>
+              <span>{loading ? 'Refreshing...' : 'Refresh'}</span>
+            </button>
+          </div>
           <p className="text-gray-600 text-lg" style={{color: '#4b5563', fontSize: '1.125rem'}}>
             Connect with fellow NEA members and expand your professional network.
           </p>
