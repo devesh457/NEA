@@ -963,22 +963,6 @@ export default function AdminDashboard() {
                         <div><span className="font-medium">Posting:</span> {member.posting || 'Not provided'}</div>
                         <div><span className="font-medium">Joined:</span> {formatDate(member.createdAt)}</div>
                       </div>
-
-                      {!member.isApproved && (
-                        <div className="mt-4 flex space-x-2">
-                              <button
-                            onClick={() => {
-                              if (selectedMember) {
-                                handleApproveUser(selectedMember.id);
-                                setSelectedMember(null);
-                              }
-                            }}
-                            className="bg-green-600 text-white py-3 px-6 rounded-lg hover:bg-green-700 transition-colors"
-                              >
-                            Approve This User
-                              </button>
-                            </div>
-                          )}
                       </div>
                     ))}
                 </div>
