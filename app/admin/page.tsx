@@ -1671,22 +1671,6 @@ export default function AdminDashboard() {
                     </span>
                   )}
                 </div>
-
-                {!selectedMember.isApproved && (
-                  <div className="mt-4">
-                    <button
-                      onClick={() => {
-                        if (selectedMember) {
-                          handleApproveUser(selectedMember.id);
-                          setSelectedMember(null);
-                        }
-                      }}
-                      className="w-full bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700"
-                    >
-                      Approve Member
-                    </button>
-                  </div>
-                )}
               </div>
 
               {/* Member Information */}
