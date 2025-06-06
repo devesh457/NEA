@@ -967,14 +967,15 @@ export default function AdminDashboard() {
                       {!member.isApproved && (
                         <div className="mt-4 flex space-x-2">
                               <button
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              handleApproveUser(selectedMember.id);
-                              setSelectedMember(null);
+                            onClick={() => {
+                              if (selectedMember) {
+                                handleApproveUser(selectedMember.id);
+                                setSelectedMember(null);
+                              }
                             }}
-                            className="flex-1 bg-green-600 text-white px-3 py-2 rounded text-sm hover:bg-green-700"
+                            className="bg-green-600 text-white py-3 px-6 rounded-lg hover:bg-green-700 transition-colors"
                               >
-                            Approve
+                            Approve This User
                               </button>
                             </div>
                           )}
@@ -1691,8 +1692,10 @@ export default function AdminDashboard() {
                   <div className="mt-4">
                     <button
                       onClick={() => {
-                        handleApproveUser(selectedMember.id);
-                        setSelectedMember(null);
+                        if (selectedMember) {
+                          handleApproveUser(selectedMember.id);
+                          setSelectedMember(null);
+                        }
                       }}
                       className="w-full bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700"
                     >
