@@ -969,7 +969,8 @@ export default function AdminDashboard() {
                               <button
                             onClick={(e) => {
                               e.stopPropagation();
-                              handleApproveUser(member.id);
+                              handleApproveUser(selectedMember.id);
+                              setSelectedMember(null);
                             }}
                             className="flex-1 bg-green-600 text-white px-3 py-2 rounded text-sm hover:bg-green-700"
                               >
