@@ -329,20 +329,6 @@ export default function AdminMembersPage() {
                   </div>
                 </div>
               </div>
-
-              {!selectedMember.isApproved && (
-                <div className="mt-8 pt-6 border-t">
-                  <button
-                    onClick={() => {
-                      handleApproveUser(selectedMember.id);
-                      setSelectedMember(null);
-                    }}
-                    className="bg-green-600 text-white py-3 px-6 rounded-lg hover:bg-green-700 transition-colors"
-                  >
-                    Approve This User
-                  </button>
-                </div>
-              )}
             </div>
           </div>
         )}
