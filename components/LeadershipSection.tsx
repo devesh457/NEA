@@ -94,45 +94,55 @@ export default function LeadershipSection() {
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-12 max-w-4xl mx-auto" style={{display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '3rem', maxWidth: '56rem', margin: '0 auto'}}>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-6xl mx-auto" style={{display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '2rem', maxWidth: '72rem', margin: '0 auto'}}>
           {leaders.map((leader) => (
-            <div key={leader.id} className="group bg-white/80 backdrop-blur-md rounded-3xl shadow-2xl border border-white/20 p-8 hover:shadow-3xl transition-all duration-500 transform hover:-translate-y-4" style={{backgroundColor: 'rgba(255, 255, 255, 0.8)', backdropFilter: 'blur(12px)', borderRadius: '1.5rem', boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.25)', border: '1px solid rgba(255, 255, 255, 0.2)', padding: '2rem', transition: 'all 0.5s ease'}}>
-              <div className="text-center">
-                <div className="relative mx-auto w-32 h-32 mb-6" style={{position: 'relative', margin: '0 auto', width: '8rem', height: '8rem', marginBottom: '1.5rem'}}>
-                  <div className="absolute inset-0 bg-gradient-to-r from-blue-600 to-purple-600 rounded-full animate-pulse" style={{position: 'absolute', inset: 0, background: 'linear-gradient(90deg, #2563eb, #9333ea)', borderRadius: '50%', animation: 'pulse 2s infinite'}}></div>
-                  <div className="relative w-full h-full bg-gradient-to-r from-blue-600 to-purple-600 rounded-full flex items-center justify-center" style={{position: 'relative', width: '100%', height: '100%', background: 'linear-gradient(90deg, #2563eb, #9333ea)', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
-                    {leader.imageUrl ? (
-                      <img src={leader.imageUrl} alt={leader.name} className="w-full h-full rounded-full object-cover" style={{width: '100%', height: '100%', borderRadius: '50%', objectFit: 'cover'}} />
-                    ) : (
-                      <span className="text-3xl font-bold text-white" style={{fontSize: '1.875rem', fontWeight: '700', color: 'white'}}>
+            <div key={leader.id} className="group bg-white/90 backdrop-blur-md rounded-2xl shadow-xl border border-white/30 overflow-hidden transition-all duration-500 transform hover:-translate-y-2 hover:shadow-2xl" style={{backgroundColor: 'rgba(255, 255, 255, 0.9)', backdropFilter: 'blur(12px)', borderRadius: '1rem', boxShadow: '0 10px 25px -5px rgba(0, 0, 0, 0.1)', border: '1px solid rgba(255, 255, 255, 0.3)', transition: 'all 0.4s ease'}}>
+              <div className="relative p-6 pb-4" style={{position: 'relative', padding: '1.5rem', paddingBottom: '1rem'}}>
+                {/* Decorative elements */}
+                <div className="absolute top-0 right-0 w-24 h-24 bg-gradient-to-bl from-blue-100 to-purple-100 rounded-bl-full opacity-50" style={{position: 'absolute', top: 0, right: 0, width: '6rem', height: '6rem', background: 'linear-gradient(to bottom left, rgba(219, 234, 254, 0.5), rgba(243, 232, 255, 0.5))', borderBottomLeftRadius: '100%', opacity: '0.5'}}></div>
+                
+                {/* Avatar with initials */}
+                <div className="flex justify-center mb-5" style={{display: 'flex', justifyContent: 'center', marginBottom: '1.25rem'}}>
+                  <div className="relative">
+                    <div className="w-24 h-24 rounded-full bg-gradient-to-r from-blue-600 to-purple-600 flex items-center justify-center shadow-lg" style={{width: '6rem', height: '6rem', borderRadius: '50%', background: 'linear-gradient(90deg, #2563eb, #9333ea)', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 10px 15px -3px rgba(37, 99, 235, 0.3)'}}>
+                      <span className="text-2xl font-bold text-white" style={{fontSize: '1.5rem', fontWeight: '700', color: 'white'}}>
                         {leader.name.split(' ').map(n => n[0]).join('').toUpperCase()}
                       </span>
-                    )}
+                    </div>
+                    {/* Decorative ring */}
+                    <div className="absolute -inset-1 rounded-full border-2 border-white/30 opacity-70" style={{position: 'absolute', inset: '-0.25rem', borderRadius: '50%', border: '2px solid rgba(255, 255, 255, 0.3)', opacity: '0.7'}}></div>
                   </div>
                 </div>
                 
-                <h3 className="text-2xl font-bold text-gray-900 mb-2" style={{fontSize: '1.5rem', fontWeight: '700', color: '#111827', marginBottom: '0.5rem'}}>
-                  {leader.name}
-                </h3>
-                
-                <p className="text-lg font-semibold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent mb-4" style={{fontSize: '1.125rem', fontWeight: '600', background: 'linear-gradient(90deg, #2563eb, #9333ea)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', marginBottom: '1rem'}}>
-                  {leader.position}
-                </p>
-                
-                {leader.bio && (
-                  <p className="text-gray-600 leading-relaxed mb-6" style={{color: '#4b5563', lineHeight: '1.75', marginBottom: '1.5rem'}}>
-                    {leader.bio.length > 150 ? `${leader.bio.substring(0, 150)}...` : leader.bio}
-                  </p>
-                )}
-                
+                {/* Name and Position */}
+                <div className="text-center mb-4" style={{textAlign: 'center', marginBottom: '1rem'}}>
+                  <h3 className="text-xl font-bold text-gray-900" style={{fontSize: '1.25rem', fontWeight: '700', color: '#111827'}}>
+                    {leader.name}
+                  </h3>
+                  <div className="inline-block mt-1 px-3 py-1 bg-gradient-to-r from-blue-50 to-purple-50 rounded-full" style={{display: 'inline-block', marginTop: '0.25rem', padding: '0.25rem 0.75rem', background: 'linear-gradient(90deg, #eff6ff, #faf5ff)', borderRadius: '9999px'}}>
+                    <p className="text-sm font-semibold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent" style={{fontSize: '0.875rem', fontWeight: '600', background: 'linear-gradient(90deg, #2563eb, #9333ea)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent'}}>
+                      {leader.position}
+                    </p>
+                  </div>
+                </div>
+              </div>
+              
+              {/* Contact Information */}
+              <div className="bg-gradient-to-r from-gray-50 to-gray-100 p-4 border-t border-gray-100" style={{background: 'linear-gradient(90deg, #f9fafb, #f3f4f6)', padding: '1rem', borderTop: '1px solid #f3f4f6'}}>
                 <div className="flex flex-col space-y-2" style={{display: 'flex', flexDirection: 'column', gap: '0.5rem'}}>
                   {leader.email && (
-                    <a href={`mailto:${leader.email}`} className="text-blue-600 hover:text-purple-600 transition-colors font-medium" style={{color: '#2563eb', textDecoration: 'none', transition: 'color 0.2s ease', fontWeight: '500'}}>
+                    <a href={`mailto:${leader.email}`} className="flex items-center text-sm text-blue-600 hover:text-purple-600 transition-colors" style={{display: 'flex', alignItems: 'center', fontSize: '0.875rem', color: '#2563eb', textDecoration: 'none', transition: 'color 0.2s ease'}}>
+                      <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" style={{width: '1rem', height: '1rem', marginRight: '0.5rem'}}>
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                      </svg>
                       {leader.email}
                     </a>
                   )}
                   {leader.phone && (
-                    <a href={`tel:${leader.phone}`} className="text-blue-600 hover:text-purple-600 transition-colors font-medium" style={{color: '#2563eb', textDecoration: 'none', transition: 'color 0.2s ease', fontWeight: '500'}}>
+                    <a href={`tel:${leader.phone}`} className="flex items-center text-sm text-blue-600 hover:text-purple-600 transition-colors" style={{display: 'flex', alignItems: 'center', fontSize: '0.875rem', color: '#2563eb', textDecoration: 'none', transition: 'color 0.2s ease'}}>
+                      <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" style={{width: '1rem', height: '1rem', marginRight: '0.5rem'}}>
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
+                      </svg>
                       {leader.phone}
                     </a>
                   )}
@@ -157,4 +167,4 @@ export default function LeadershipSection() {
       </div>
     </div>
   );
-} 
+}
