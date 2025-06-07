@@ -103,13 +103,16 @@ export default function FirstTimeLoginForm({ onComplete }: FirstTimeLoginFormPro
     const requiredFields = [
       'dateOfJoining', 'lastPlaceOfPosting', 'bloodGroup', 'dateOfBirth', 
       'employeeId', 'emergencyContactName', 'emergencyContactPhone', 
-      'emergencyContactRelation'
+      'emergencyContactRelation', 'imageUrl'
     ];
 
     const missingFields = requiredFields.filter(field => !formData[field as keyof typeof formData]);
     
     if (missingFields.length > 0) {
       setMessage('Please fill in all required fields.');
+      if (missingFields.includes('imageUrl')) {
+        setMessage('Please upload a profile picture and fill in all required fields.');
+      }
       setLoading(false);
       return;
     }
@@ -165,7 +168,7 @@ export default function FirstTimeLoginForm({ onComplete }: FirstTimeLoginFormPro
           {/* Profile Picture Upload */}
           <div className="text-center">
             <label className="block text-sm font-medium text-gray-700 mb-4">
-              Profile Picture
+              Profile Picture <span className="text-red-500">*</span>
             </label>
             <div className="flex flex-col items-center space-y-4">
               <div className="w-32 h-32 rounded-full overflow-hidden bg-gradient-to-r from-blue-600 to-purple-600 flex items-center justify-center">
@@ -427,4 +430,4 @@ export default function FirstTimeLoginForm({ onComplete }: FirstTimeLoginFormPro
       </div>
     </div>
   );
-} 
+}

@@ -19,7 +19,7 @@ export async function POST(request: NextRequest) {
     const requiredFields = [
       'dateOfJoining', 'lastPlaceOfPosting', 'bloodGroup', 'dateOfBirth', 
       'employeeId', 'emergencyContactName', 'emergencyContactPhone', 
-      'emergencyContactRelation'
+      'emergencyContactRelation', 'imageUrl'
     ];
 
     const missingFields = requiredFields.filter(field => !data[field]);
@@ -82,4 +82,4 @@ export async function POST(request: NextRequest) {
       error: 'Internal server error' 
     }, { status: 500 });
   }
-} 
+}
