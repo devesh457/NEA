@@ -148,9 +148,9 @@ export default function FirstTimeLoginForm({ onComplete }: FirstTimeLoginFormPro
       const response = await fetch('/api/profile/complete-first-time', {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json',
+          'Content-Type': 'application/json'
         },
-        body: JSON.stringify(formData),
+        body: JSON.stringify(formData)
       });
 
       const data = await response.json();
@@ -177,7 +177,7 @@ export default function FirstTimeLoginForm({ onComplete }: FirstTimeLoginFormPro
     } finally {
       setLoading(false);
     }
-  };
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50 flex items-center justify-center p-4">
@@ -208,55 +208,58 @@ export default function FirstTimeLoginForm({ onComplete }: FirstTimeLoginFormPro
                 )}
               </div>
               
-              <div 
-                className="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center hover:border-blue-400 transition-colors cursor-pointer max-w-sm relative touch-manipulation"
-                onClick={triggerFileInput}
-                role="button"
-                tabIndex={0}
-                onKeyPress={(e) => e.key === 'Enter' && triggerFileInput()}
-              >
-                {imageUploading ? (
-                  <div className="text-blue-600">
-                    <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto mb-2"></div>
-                    <p>Uploading...</p>
-                  </div>
-                ) : (
-                  <>
-                    <svg
-                      className="mx-auto h-12 w-12 text-gray-400"
-                      stroke="currentColor"
-                      fill="none"
-                      viewBox="0 0 48 48"
-                      aria-hidden="true"
-                    >
-                      <path
-                        d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02"
-                        strokeWidth={2}
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                      />
-                    </svg>
-                    <p className="text-gray-600 mt-4 mb-2">
-                      <span className="font-medium text-blue-600">Tap to upload</span> profile picture
-                    </p>
-                    <p className="text-xs text-gray-500">PNG, JPG, WebP up to 5MB</p>
-                  </>
-                )}
+              <div className="flex flex-col items-center gap-4">
+                <div 
+                  className="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center hover:border-blue-400 transition-colors cursor-pointer max-w-sm relative touch-manipulation w-full"
+                  onClick={() => fileInputRef.current?.click()}
+                  role="button"
+                  tabIndex={0}
+                  onKeyPress={(e) => e.key === 'Enter' && fileInputRef.current?.click()}
+                >
+                  {imageUploading ? (
+                    <div className="text-blue-600">
+                      <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto mb-2"></div>
+                      <p>Uploading...</p>
+                    </div>
+                  ) : (
+                    <>
+                      <svg
+                        className="mx-auto h-12 w-12 text-gray-400"
+                        stroke="currentColor"
+                        fill="none"
+                        viewBox="0 0 48 48"
+                        aria-hidden="true"
+                      >
+                        <path
+                          d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02"
+                          strokeWidth={2}
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        />
+                      </svg>
+                      <p className="text-gray-600 mt-4 mb-2">
+                        <span className="font-medium text-blue-600">Choose from gallery</span>
+                      </p>
+                      <p className="text-xs text-gray-500">PNG, JPG, WebP up to 5MB</p>
+                    </>
+                  )}
+                </div>
+
                 {message && (
                   <div className={`mt-2 text-sm ${message.includes('success') ? 'text-green-600' : 'text-red-600'}`}>
                     {message}
                   </div>
                 )}
+
+                <input
+                  ref={fileInputRef}
+                  type="file"
+                  accept="image/*"
+                  onChange={handleFileSelect}
+                  className="hidden"
+                  aria-label="Choose profile picture from gallery"
+                />
               </div>
-              <input
-                ref={fileInputRef}
-                type="file"
-                accept="image/*"
-                onChange={handleFileSelect}
-                className="hidden"
-                capture="environment"
-                aria-label="Upload profile picture"
-              />
             </div>
           </div>
 
