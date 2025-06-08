@@ -47,41 +47,58 @@ export default function FirstTimeLoginForm({ onComplete }: FirstTimeLoginFormPro
   const handleImageUpload = async (file: File) => {
     if (!file) return;
 
+    // Reset previous error messages
+    setMessage('');
+
+    // Validate file type
     const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp'];
     if (!allowedTypes.includes(file.type)) {
-      setMessage('Invalid file type. Only JPEG, PNG, and WebP are allowed.');
+      setMessage('Please select a valid image file (JPEG, PNG, or WebP).');
+      if (fileInputRef.current) {
+        fileInputRef.current.value = '';
+      }
       return;
     }
 
-    const maxSize = 5 * 1024 * 1024; // 5MB
+    // Validate file size (5MB)
+    const maxSize = 5 * 1024 * 1024;
     if (file.size > maxSize) {
-      setMessage('File size too large. Maximum size is 5MB.');
+      setMessage('Please select a smaller image (maximum 5MB).');
+      if (fileInputRef.current) {
+        fileInputRef.current.value = '';
+      }
       return;
     }
 
     setImageUploading(true);
-    setMessage('');
 
     try {
+      // Create a new FormData instance
       const uploadFormData = new FormData();
       uploadFormData.append('file', file);
 
+      // Upload the image
       const response = await fetch('/api/upload/image', {
         method: 'POST',
-        body: uploadFormData,
+        body: uploadFormData
       });
 
       const data = await response.json();
 
-      if (response.ok) {
-        setFormData(prev => ({ ...prev, imageUrl: data.imageUrl }));
-        setImagePreview(data.imageUrl);
-        setMessage('Image uploaded successfully!');
-      } else {
-        setMessage(data.error || 'Failed to upload image');
+      if (!response.ok) {
+        throw new Error(data.error || 'Failed to upload image');
       }
+
+      // Update form state with the new image URL
+      setFormData(prev => ({ ...prev, imageUrl: data.imageUrl }));
+      setImagePreview(data.imageUrl);
+      setMessage('Image uploaded successfully!');
     } catch (error) {
-      setMessage('An error occurred while uploading image');
+      console.error('Upload error:', error);
+      setMessage(error instanceof Error ? error.message : 'Failed to upload image. Please try again.');
+      if (fileInputRef.current) {
+        fileInputRef.current.value = '';
+      }
     } finally {
       setImageUploading(false);
     }
@@ -90,7 +107,17 @@ export default function FirstTimeLoginForm({ onComplete }: FirstTimeLoginFormPro
   const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
+      // Clear any previous error messages
+      setMessage('');
+      // Reset the preview if a new file is selected
+      setImagePreview(null);
       handleImageUpload(file);
+    }
+  };
+
+  const triggerFileInput = () => {
+    if (fileInputRef.current) {
+      fileInputRef.current.click();
     }
   };
 
@@ -182,8 +209,11 @@ export default function FirstTimeLoginForm({ onComplete }: FirstTimeLoginFormPro
               </div>
               
               <div 
-                className="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center hover:border-blue-400 transition-colors cursor-pointer max-w-sm"
-                onClick={() => fileInputRef.current?.click()}
+                className="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center hover:border-blue-400 transition-colors cursor-pointer max-w-sm relative touch-manipulation"
+                onClick={triggerFileInput}
+                role="button"
+                tabIndex={0}
+                onKeyPress={(e) => e.key === 'Enter' && triggerFileInput()}
               >
                 {imageUploading ? (
                   <div className="text-blue-600">
@@ -192,11 +222,30 @@ export default function FirstTimeLoginForm({ onComplete }: FirstTimeLoginFormPro
                   </div>
                 ) : (
                   <>
-                    <p className="text-gray-600 mb-2">
-                      <span className="font-medium text-blue-600">Click to upload</span> profile picture
+                    <svg
+                      className="mx-auto h-12 w-12 text-gray-400"
+                      stroke="currentColor"
+                      fill="none"
+                      viewBox="0 0 48 48"
+                      aria-hidden="true"
+                    >
+                      <path
+                        d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02"
+                        strokeWidth={2}
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      />
+                    </svg>
+                    <p className="text-gray-600 mt-4 mb-2">
+                      <span className="font-medium text-blue-600">Tap to upload</span> profile picture
                     </p>
                     <p className="text-xs text-gray-500">PNG, JPG, WebP up to 5MB</p>
                   </>
+                )}
+                {message && (
+                  <div className={`mt-2 text-sm ${message.includes('success') ? 'text-green-600' : 'text-red-600'}`}>
+                    {message}
+                  </div>
                 )}
               </div>
               <input
@@ -205,6 +254,8 @@ export default function FirstTimeLoginForm({ onComplete }: FirstTimeLoginFormPro
                 accept="image/*"
                 onChange={handleFileSelect}
                 className="hidden"
+                capture="environment"
+                aria-label="Upload profile picture"
               />
             </div>
           </div>
