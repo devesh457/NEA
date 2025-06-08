@@ -161,6 +161,11 @@ export default function RegisterPage() {
                   <option value="Deputy General Manager (T)">Deputy General Manager (T)</option>
                   <option value="General Manager (T)">General Manager (T)</option>
                   <option value="Chief General Manager (T)">Chief General Manager (T)</option>
+                  <option value="Deputy Manager (Admn.)">Deputy Manager (Admn.)</option>
+                  <option value="Manager (Admn.)">Manager (Admn.)</option>
+                  <option value="Deputy General Manager (Admn.)">Deputy General Manager (Admn.)</option>
+                  <option value="General Manager (Admn.)">General Manager (Admn.)</option>
+                  <option value="Chief General Manager (Admn.)">Chief General Manager (Admn.)</option>
                 </select>
               </div>
 
