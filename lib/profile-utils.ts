@@ -11,11 +11,16 @@ export async function checkProfileStatus(email: string) {
         lastPostingConfirmedAt: true,
         posting: true,
         dateOfJoining: true,
+        lastPlaceOfPosting: true,
         bloodGroup: true,
         dateOfBirth: true,
         employeeId: true,
         emergencyContactName: true,
-        insuranceNomineeName: true
+        emergencyContactPhone: true,
+        emergencyContactRelation: true,
+        insuranceNomineeName: true,
+        insuranceNomineePhone: true,
+        insuranceNomineeRelation: true
       }
     }) as any;
 
@@ -30,11 +35,16 @@ export async function checkProfileStatus(email: string) {
     // Check if profile is complete
     const requiredFields = [
       user.dateOfJoining,
+      user.lastPlaceOfPosting,
       user.bloodGroup,
       user.dateOfBirth,
       user.employeeId,
       user.emergencyContactName,
+      user.emergencyContactPhone,
+      user.emergencyContactRelation,
       user.insuranceNomineeName,
+      user.insuranceNomineePhone,
+      user.insuranceNomineeRelation,
       user.posting
     ];
 

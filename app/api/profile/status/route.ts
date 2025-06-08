@@ -25,11 +25,16 @@ export async function GET(request: NextRequest) {
     // Check if profile is complete
     const requiredFields = [
       user.dateOfJoining,
+      user.lastPlaceOfPosting,
       user.bloodGroup,
       user.dateOfBirth,
       user.employeeId,
       user.emergencyContactName,
+      user.emergencyContactPhone,
+      user.emergencyContactRelation,
       user.insuranceNomineeName,
+      user.insuranceNomineePhone,
+      user.insuranceNomineeRelation,
       user.posting
     ];
 

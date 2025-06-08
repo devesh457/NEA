@@ -130,7 +130,8 @@ export default function FirstTimeLoginForm({ onComplete }: FirstTimeLoginFormPro
     const requiredFields = [
       'dateOfJoining', 'lastPlaceOfPosting', 'bloodGroup', 'dateOfBirth', 
       'employeeId', 'emergencyContactName', 'emergencyContactPhone', 
-      'emergencyContactRelation', 'imageUrl'
+      'emergencyContactRelation', 'insuranceNomineeName', 'insuranceNomineePhone', 
+      'insuranceNomineeRelation', 'imageUrl'
     ];
 
     const missingFields = requiredFields.filter(field => !formData[field as keyof typeof formData]);
@@ -415,7 +416,7 @@ export default function FirstTimeLoginForm({ onComplete }: FirstTimeLoginFormPro
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               <div>
                 <label htmlFor="insuranceNomineeName" className="block text-sm font-medium text-gray-700 mb-2">
-                  Nominee Name
+                  Nominee Name <span className="text-red-500">*</span>
                 </label>
                 <input
                   type="text"
@@ -423,6 +424,7 @@ export default function FirstTimeLoginForm({ onComplete }: FirstTimeLoginFormPro
                   name="insuranceNomineeName"
                   value={formData.insuranceNomineeName}
                   onChange={handleChange}
+                  required
                   className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500"
                   placeholder="Enter nominee name"
                 />
@@ -430,7 +432,7 @@ export default function FirstTimeLoginForm({ onComplete }: FirstTimeLoginFormPro
 
               <div>
                 <label htmlFor="insuranceNomineePhone" className="block text-sm font-medium text-gray-700 mb-2">
-                  Nominee Phone
+                  Nominee Phone <span className="text-red-500">*</span>
                 </label>
                 <input
                   type="tel"
@@ -438,6 +440,7 @@ export default function FirstTimeLoginForm({ onComplete }: FirstTimeLoginFormPro
                   name="insuranceNomineePhone"
                   value={formData.insuranceNomineePhone}
                   onChange={handleChange}
+                  required
                   className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500"
                   placeholder="Enter nominee phone number"
                 />
@@ -445,13 +448,14 @@ export default function FirstTimeLoginForm({ onComplete }: FirstTimeLoginFormPro
 
               <div>
                 <label htmlFor="insuranceNomineeRelation" className="block text-sm font-medium text-gray-700 mb-2">
-                  Relation with Nominee
+                  Relation with Nominee <span className="text-red-500">*</span>
                 </label>
                 <select
                   id="insuranceNomineeRelation"
                   name="insuranceNomineeRelation"
                   value={formData.insuranceNomineeRelation}
                   onChange={handleChange}
+                  required
                   className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500"
                 >
                   <option value="">Select Relation</option>

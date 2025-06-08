@@ -19,7 +19,8 @@ export async function POST(request: NextRequest) {
     const requiredFields = [
       'dateOfJoining', 'lastPlaceOfPosting', 'bloodGroup', 'dateOfBirth', 
       'employeeId', 'emergencyContactName', 'emergencyContactPhone', 
-      'emergencyContactRelation', 'imageUrl'
+      'emergencyContactRelation', 'insuranceNomineeName', 'insuranceNomineePhone', 
+      'insuranceNomineeRelation', 'imageUrl'
     ];
 
     const missingFields = requiredFields.filter(field => !data[field]);
@@ -56,9 +57,9 @@ export async function POST(request: NextRequest) {
         emergencyContactName: data.emergencyContactName,
         emergencyContactPhone: data.emergencyContactPhone,
         emergencyContactRelation: data.emergencyContactRelation,
-        insuranceNomineeName: data.insuranceNomineeName || null,
-        insuranceNomineeRelation: data.insuranceNomineeRelation || null,
-        insuranceNomineePhone: data.insuranceNomineePhone || null,
+        insuranceNomineeName: data.insuranceNomineeName,
+        insuranceNomineeRelation: data.insuranceNomineeRelation,
+        insuranceNomineePhone: data.insuranceNomineePhone,
         imageUrl: data.imageUrl || null,
         isProfileComplete: true,
         lastPostingConfirmedAt: new Date(), // Set initial posting confirmation
